@@ -17,6 +17,7 @@ import {
   RefreshCw,
   ArrowRight,
 } from "lucide-react";
+import { YearSchedule } from "@/components/year-schedule";
 import Link from "next/link";
 
 interface Stats {
@@ -186,6 +187,9 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Year Schedule Overview */}
+        <YearSchedule />
 
         {/* Revenue Section */}
         <div className="grid gap-6 lg:grid-cols-2">
