@@ -57,11 +57,23 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
     return map;
   }, [numCustomers, frequency, startDate, endDate]);
 
+  // 120 customers is max capacity for 1 team per year
+  const MAX_CUSTOMERS_PER_TEAM = 120;
+  const needs2Teams = numCustomers > MAX_CUSTOMERS_PER_TEAM;
+
   // Get color based on job count
-  // 1 team can handle up to ~2-3 jobs/day comfortably
-  // 4+ jobs/day suggests need for 2 teams
   const getBoxStyles = (count: number) => {
     if (count === 0) return "bg-[var(--nox-bg-hover)]";
+
+    // Under 120 customers: all green/teal (1 team can handle)
+    if (!needs2Teams) {
+      if (count === 1) return "bg-[var(--nox-accent)]/30";
+      if (count === 2) return "bg-[var(--nox-accent)]/50";
+      if (count === 3) return "bg-[var(--nox-accent)]/70";
+      return "bg-[var(--nox-accent)]";
+    }
+
+    // Over 120 customers: show 2-team colors for overflow
     if (count === 1) return "bg-[var(--nox-accent)]/30";
     if (count === 2) return "bg-[var(--nox-accent)]/50";
     if (count === 3) return "bg-[var(--nox-accent)]/70";
@@ -74,14 +86,15 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
     return "bg-red-500";
   };
 
-  // Calculate days needing 2 teams
+  // Calculate days needing 2 teams (only relevant when over 120 customers)
   const daysNeeding2Teams = useMemo(() => {
+    if (!needs2Teams) return 0;
     let count = 0;
     dayJobsMap.forEach((jobCount) => {
       if (jobCount >= 5) count++;
     });
     return count;
-  }, [dayJobsMap]);
+  }, [dayJobsMap, needs2Teams]);
 
   // Organize days into weeks
   const weeks = useMemo(() => {
@@ -154,7 +167,7 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
           </div>
           <div className="flex items-center gap-4 text-xs text-[var(--nox-text-muted)]">
             <div className="flex items-center gap-2">
-              <span>1 Team</span>
+              <span>{needs2Teams ? "1 Team" : "Workload"}</span>
               <div className="flex gap-1">
                 <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-bg-hover)]" />
                 <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/30" />
@@ -163,15 +176,17 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
                 <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]" />
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span>2 Teams</span>
-              <div className="flex gap-1">
-                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/60" />
-                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/80" />
-                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500" />
-                <div className="w-3.5 h-3.5 rounded-sm bg-red-500" />
+            {needs2Teams && (
+              <div className="flex items-center gap-2">
+                <span>2 Teams</span>
+                <div className="flex gap-1">
+                  <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/60" />
+                  <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/80" />
+                  <div className="w-3.5 h-3.5 rounded-sm bg-amber-500" />
+                  <div className="w-3.5 h-3.5 rounded-sm bg-red-500" />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </CardHeader>
@@ -230,7 +245,7 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[var(--nox-border-subtle)]">
+        <div className={`grid gap-4 mt-6 pt-6 border-t border-[var(--nox-border-subtle)] ${needs2Teams ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}>
           <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
             <p className="text-3xl font-bold text-[var(--nox-text-primary)]">{totalJobs}</p>
             <p className="text-xs text-[var(--nox-text-muted)] mt-1">Total Jobs/Year</p>
@@ -243,12 +258,14 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
             <p className="text-3xl font-bold text-[var(--nox-text-secondary)]">{(totalJobs / 52).toFixed(1)}</p>
             <p className="text-xs text-[var(--nox-text-muted)] mt-1">Avg Jobs/Week</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
-            <p className={`text-3xl font-bold ${daysNeeding2Teams > 0 ? "text-amber-500" : "text-[var(--nox-success)]"}`}>
-              {daysNeeding2Teams}
-            </p>
-            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Days Need 2 Teams</p>
-          </div>
+          {needs2Teams && (
+            <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+              <p className={`text-3xl font-bold ${daysNeeding2Teams > 0 ? "text-amber-500" : "text-[var(--nox-success)]"}`}>
+                {daysNeeding2Teams}
+              </p>
+              <p className="text-xs text-[var(--nox-text-muted)] mt-1">Days Need 2 Teams</p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
