@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Table,
   TableBody,
@@ -15,9 +16,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { DollarSign, AlertTriangle, CheckCircle, Copy, Mail } from "lucide-react";
+import { DollarSign, AlertTriangle, CheckCircle, Copy, Mail, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { PaymentMethod } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface CollectionItem {
   id: string;
@@ -66,15 +68,17 @@ export default function CollectionsPage() {
 
   const getDaysOutstandingBadge = (days: number) => {
     if (days <= 7) {
-      return <Badge variant="completed">{days} days</Badge>;
+      return <Badge variant="completed">{days}d</Badge>;
     } else if (days <= 30) {
-      return <Badge variant="scheduled">{days} days</Badge>;
+      return <Badge variant="invoiced">{days}d</Badge>;
     } else if (days <= 60) {
-      return <Badge variant="invoiced">{days} days</Badge>;
+      return <Badge variant="warning">{days}d</Badge>;
     } else {
-      return <Badge variant="cancelled">{days} days</Badge>;
+      return <Badge variant="overdue">{days}d</Badge>;
     }
   };
+
+  const isOverdue = (days: number) => days > 30;
 
   const handleMarkPaid = async (jobId: string) => {
     setMarkingPaid(jobId);
@@ -90,7 +94,6 @@ export default function CollectionsPage() {
       });
 
       if (res.ok) {
-        // Remove from list
         setCollections(collections.filter((c) => c.id !== jobId));
       }
     } catch (error) {
@@ -148,59 +151,56 @@ NOXZIPPER Team`;
   };
 
   const totalOutstanding = collections.reduce((sum, c) => sum + c.price, 0);
+  const overdueCount = collections.filter((c) => calculateDaysOutstanding(c.invoiceSentAt) > 30).length;
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Collections</h1>
-            <p className="text-zinc-400">Track and manage unpaid invoices</p>
-          </div>
-        </div>
-
         {/* Summary Cards */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Card>
+          <Card className="kpi-card">
             <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-600/20">
-                  <AlertTriangle className="h-6 w-6 text-red-500" />
-                </div>
+              <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-zinc-400">Unpaid Invoices</p>
-                  <p className="text-2xl font-bold">{collections.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-orange-600/20">
-                  <DollarSign className="h-6 w-6 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-400">Total Outstanding</p>
-                  <p className="text-2xl font-bold">{formatCurrency(totalOutstanding)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-yellow-600/20">
-                  <AlertTriangle className="h-6 w-6 text-yellow-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-400">Over 30 Days</p>
-                  <p className="text-2xl font-bold">
-                    {collections.filter((c) => calculateDaysOutstanding(c.invoiceSentAt) > 30).length}
+                  <p className="text-label mb-1">Unpaid Invoices</p>
+                  <p className="text-3xl font-bold text-[var(--nox-text-primary)]">
+                    {collections.length}
                   </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-accent)]/10">
+                  <Clock className="h-6 w-6 text-[var(--nox-accent)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="kpi-card kpi-card-accent">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Total Outstanding</p>
+                  <p className="text-3xl font-bold text-[var(--nox-accent)]">
+                    {formatCurrency(totalOutstanding)}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-accent)]/10">
+                  <DollarSign className="h-6 w-6 text-[var(--nox-accent)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="kpi-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Overdue (30+ days)</p>
+                  <p className="text-3xl font-bold text-[var(--nox-error)]">
+                    {overdueCount}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-error)]/10">
+                  <AlertTriangle className="h-6 w-6 text-[var(--nox-error)]" />
                 </div>
               </div>
             </CardContent>
@@ -209,92 +209,106 @@ NOXZIPPER Team`;
 
         {/* Collections Table */}
         <Card>
-          <CardHeader>
-            <CardTitle>Unpaid Invoices ({collections.length})</CardTitle>
+          <CardHeader className="border-b border-[var(--nox-border-subtle)]">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">Payment Queue</CardTitle>
+              <span className="text-sm text-[var(--nox-text-muted)]">
+                {collections.length} invoice{collections.length !== 1 ? "s" : ""} pending
+              </span>
+            </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {loading ? (
-              <div className="flex items-center justify-center h-32">
-                <Spinner />
+              <div className="flex items-center justify-center h-48">
+                <Spinner size="lg" />
               </div>
             ) : collections.length === 0 ? (
-              <div className="text-center py-8 text-zinc-400">
-                <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
-                <p className="text-lg font-medium">All Caught Up!</p>
-                <p>No outstanding invoices at this time.</p>
-              </div>
+              <EmptyState
+                icon={CheckCircle}
+                title="All Caught Up!"
+                description="No outstanding invoices at this time. Great job staying on top of collections."
+              />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Customer</TableHead>
                     <TableHead>Invoice #</TableHead>
-                    <TableHead>Invoice Sent</TableHead>
+                    <TableHead>Sent</TableHead>
                     <TableHead>Amount</TableHead>
-                    <TableHead>Days Outstanding</TableHead>
+                    <TableHead>Age</TableHead>
                     <TableHead>Contact</TableHead>
-                    <TableHead></TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {collections.map((item) => {
                     const daysOutstanding = calculateDaysOutstanding(item.invoiceSentAt);
+                    const overdue = isOverdue(daysOutstanding);
                     return (
-                      <TableRow key={item.id}>
+                      <TableRow
+                        key={item.id}
+                        className={cn(overdue && "table-row-overdue")}
+                      >
                         <TableCell>
                           <Link
                             href={`/customers/${item.customer.id}`}
-                            className="font-medium hover:text-orange-500"
+                            className="font-medium text-[var(--nox-text-primary)] hover:text-[var(--nox-accent)] transition-colors"
                           >
                             {item.customer.name}
                           </Link>
                         </TableCell>
-                        <TableCell className="font-mono">
-                          {item.invoiceNumber || "—"}
-                        </TableCell>
                         <TableCell>
+                          <code className="text-xs bg-[var(--nox-bg-hover)] px-2 py-1 rounded">
+                            {item.invoiceNumber || "—"}
+                          </code>
+                        </TableCell>
+                        <TableCell className="text-[var(--nox-text-secondary)]">
                           {item.invoiceSentAt ? formatDate(item.invoiceSentAt) : "—"}
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {formatCurrency(item.price)}
+                        <TableCell>
+                          <span className="font-semibold text-[var(--nox-text-primary)]">
+                            {formatCurrency(item.price)}
+                          </span>
                         </TableCell>
                         <TableCell>
                           {getDaysOutstandingBadge(daysOutstanding)}
                         </TableCell>
-                        <TableCell className="text-zinc-400">
+                        <TableCell className="text-[var(--nox-text-muted)] text-sm">
                           {item.customer.contactPhone || item.customer.contactEmail || "—"}
                         </TableCell>
                         <TableCell>
-                          <div className="flex gap-1">
+                          <div className="flex items-center justify-end gap-1">
                             <Button
-                              size="sm"
+                              size="icon"
                               variant="ghost"
                               onClick={() => copyReminderToClipboard(item)}
                               title="Copy reminder email"
+                              className="h-8 w-8"
                             >
                               <Copy className="h-4 w-4" />
                             </Button>
                             <Button
-                              size="sm"
+                              size="icon"
                               variant="ghost"
                               onClick={() => openMailClient(item)}
                               title="Send reminder email"
+                              className="h-8 w-8"
                             >
                               <Mail className="h-4 w-4" />
                             </Button>
                             <Link href={`/jobs/${item.id}`}>
-                              <Button size="sm" variant="ghost">
-                                View
+                              <Button size="icon" variant="ghost" className="h-8 w-8">
+                                <ExternalLink className="h-4 w-4" />
                               </Button>
                             </Link>
                             <Button
                               size="sm"
-                              variant="outline"
                               onClick={() => handleMarkPaid(item.id)}
                               disabled={markingPaid === item.id}
                             >
                               {markingPaid === item.id ? (
-                                <Spinner className="h-4 w-4" />
+                                <Spinner size="sm" />
                               ) : (
                                 "Mark Paid"
                               )}

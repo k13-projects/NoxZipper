@@ -1,23 +1,65 @@
 @import "tailwindcss";
 
+/* ============================================
+   NOXZIPPER Industrial Design System
+   ============================================ */
+
 :root {
-  --background: #18181b;
-  --foreground: #f4f4f5;
-  --card: #1f1f23;
-  --card-foreground: #f4f4f5;
-  --primary: #ea580c;
+  /* Background Colors - Near Black / Charcoal */
+  --nox-bg-base: #0c0c0e;
+  --nox-bg-elevated: #131316;
+  --nox-bg-surface: #1a1a1f;
+  --nox-bg-hover: #222228;
+
+  /* Text Colors */
+  --nox-text-primary: #f0f0f2;
+  --nox-text-secondary: #9ca3af;
+  --nox-text-muted: #6b7280;
+  --nox-text-disabled: #4b5563;
+
+  /* Border Colors */
+  --nox-border-subtle: #27272a;
+  --nox-border-default: #3f3f46;
+  --nox-border-strong: #52525b;
+
+  /* Accent - Safety Orange */
+  --nox-accent: #f97316;
+  --nox-accent-hover: #ea580c;
+  --nox-accent-muted: rgba(249, 115, 22, 0.15);
+  --nox-accent-subtle: rgba(249, 115, 22, 0.08);
+
+  /* Status Colors */
+  --nox-status-scheduled: #6b7280;
+  --nox-status-completed: #22c55e;
+  --nox-status-invoiced: #3b82f6;
+  --nox-status-paid: #14b8a6;
+  --nox-status-overdue: #ef4444;
+  --nox-status-cancelled: #ef4444;
+
+  /* Semantic Colors */
+  --nox-success: #22c55e;
+  --nox-warning: #f59e0b;
+  --nox-error: #ef4444;
+  --nox-info: #3b82f6;
+
+  /* Legacy compatibility */
+  --background: var(--nox-bg-base);
+  --foreground: var(--nox-text-primary);
+  --card: var(--nox-bg-surface);
+  --card-foreground: var(--nox-text-primary);
+  --primary: var(--nox-accent);
   --primary-foreground: #ffffff;
-  --secondary: #27272a;
-  --secondary-foreground: #f4f4f5;
-  --muted: #27272a;
-  --muted-foreground: #a1a1aa;
-  --accent: #ea580c;
+  --secondary: var(--nox-bg-elevated);
+  --secondary-foreground: var(--nox-text-primary);
+  --muted: var(--nox-bg-elevated);
+  --muted-foreground: var(--nox-text-secondary);
+  --accent: var(--nox-accent);
   --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --destructive: var(--nox-error);
   --destructive-foreground: #ffffff;
-  --border: #3f3f46;
-  --input: #27272a;
-  --ring: #ea580c;
+  --border: var(--nox-border-default);
+  --input: var(--nox-bg-elevated);
+  --ring: var(--nox-accent);
 }
 
 * {
@@ -25,67 +67,332 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--nox-bg-base);
+  color: var(--nox-text-primary);
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar for dark theme */
+/* ============================================
+   Typography
+   ============================================ */
+
+.text-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nox-text-muted);
+}
+
+.text-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #27272a;
+  background: var(--nox-bg-elevated);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #52525b;
-  border-radius: 4px;
+  background: var(--nox-border-strong);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #71717a;
+  background: var(--nox-text-muted);
 }
 
-/* FullCalendar overrides */
+/* ============================================
+   FullCalendar Theme Override
+   ============================================ */
+
 .fc {
-  --fc-border-color: #3f3f46;
-  --fc-button-bg-color: #27272a;
-  --fc-button-border-color: #3f3f46;
-  --fc-button-hover-bg-color: #3f3f46;
-  --fc-button-hover-border-color: #52525b;
-  --fc-button-active-bg-color: #ea580c;
-  --fc-button-active-border-color: #ea580c;
-  --fc-today-bg-color: rgba(234, 88, 12, 0.1);
+  --fc-border-color: var(--nox-border-subtle);
+  --fc-button-bg-color: var(--nox-bg-elevated);
+  --fc-button-border-color: var(--nox-border-default);
+  --fc-button-hover-bg-color: var(--nox-bg-hover);
+  --fc-button-hover-border-color: var(--nox-border-strong);
+  --fc-button-active-bg-color: var(--nox-accent);
+  --fc-button-active-border-color: var(--nox-accent);
+  --fc-today-bg-color: var(--nox-accent-subtle);
   --fc-page-bg-color: transparent;
-  --fc-neutral-bg-color: #27272a;
-  --fc-list-event-hover-bg-color: #3f3f46;
+  --fc-neutral-bg-color: var(--nox-bg-elevated);
+  --fc-list-event-hover-bg-color: var(--nox-bg-hover);
   --fc-event-border-color: transparent;
 }
 
 .fc .fc-toolbar-title {
-  color: #f4f4f5;
+  color: var(--nox-text-primary);
+  font-weight: 600;
 }
 
-.fc .fc-col-header-cell-cushion,
+.fc .fc-button {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: var(--nox-text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .fc .fc-daygrid-day-number {
-  color: #a1a1aa;
+  color: var(--nox-text-secondary);
+  font-size: 0.875rem;
 }
 
 .fc .fc-daygrid-day.fc-day-today {
-  background-color: rgba(234, 88, 12, 0.1);
+  background-color: var(--nox-accent-subtle);
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: var(--nox-accent);
+  font-weight: 600;
 }
 
 .fc-event {
   cursor: pointer;
-  font-size: 0.75rem;
-  padding: 2px 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 6px;
   border-radius: 4px;
+  border: none !important;
 }
 
 .fc-event:hover {
-  opacity: 0.9;
+  opacity: 0.85;
+  transform: translateY(-1px);
+  transition: all 0.15s ease;
+}
+
+.fc .fc-daygrid-day-frame {
+  min-height: 100px;
+}
+
+/* ============================================
+   Focus States
+   ============================================ */
+
+*:focus-visible {
+  outline: 2px solid var(--nox-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Selection
+   ============================================ */
+
+::selection {
+  background: var(--nox-accent-muted);
+  color: var(--nox-text-primary);
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-orange {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+.animate-pulse-orange {
+  animation: pulse-orange 2s infinite;
+}
+
+/* ============================================
+   Toast Notifications
+   ============================================ */
+
+.toast-container {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  background: var(--nox-bg-surface);
+  border: 1px solid var(--nox-border-default);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 280px;
+  max-width: 400px;
+}
+
+.toast-success { border-left: 3px solid var(--nox-success); }
+.toast-error { border-left: 3px solid var(--nox-error); }
+.toast-warning { border-left: 3px solid var(--nox-warning); }
+.toast-info { border-left: 3px solid var(--nox-info); }
+
+/* ============================================
+   Empty States
+   ============================================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 3rem;
+  height: 3rem;
+  color: var(--nox-text-muted);
+  margin-bottom: 1rem;
+}
+
+.empty-state-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--nox-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+  font-size: 0.875rem;
+  color: var(--nox-text-secondary);
+  max-width: 24rem;
+}
+
+/* ============================================
+   Data Table Enhancements
+   ============================================ */
+
+.table-row-overdue {
+  background: rgba(239, 68, 68, 0.05) !important;
+  border-left: 3px solid var(--nox-status-overdue);
+}
+
+.table-row-overdue:hover {
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* ============================================
+   KPI Cards
+   ============================================ */
+
+.kpi-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--nox-border-default), transparent);
+}
+
+.kpi-card-accent::before {
+  background: linear-gradient(90deg, transparent, var(--nox-accent), transparent);
+}
+
+/* ============================================
+   Status Indicators
+   ============================================ */
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot-scheduled { background: var(--nox-status-scheduled); }
+.status-dot-completed { background: var(--nox-status-completed); }
+.status-dot-invoiced { background: var(--nox-status-invoiced); }
+.status-dot-paid { background: var(--nox-status-paid); }
+.status-dot-overdue { background: var(--nox-status-overdue); }
+.status-dot-cancelled { background: var(--nox-status-cancelled); }
+
+/* ============================================
+   Industrial Accents
+   ============================================ */
+
+.industrial-border {
+  border: 1px solid var(--nox-border-subtle);
+  position: relative;
+}
+
+.industrial-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--nox-accent);
+}
+
+.corner-accent {
+  position: relative;
+}
+
+.corner-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--nox-accent);
+  border-left: 2px solid var(--nox-accent);
+}
+
+.corner-accent::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 2px solid var(--nox-accent);
+  border-right: 2px solid var(--nox-accent);
 }

@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Receipt,
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -32,20 +33,30 @@ export function Sidebar() {
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
+
   return (
     <>
       {/* Mobile menu button */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed left-4 top-4 z-50 rounded-md bg-zinc-900 p-2 lg:hidden"
+        className="fixed left-4 top-4 z-50 rounded-lg bg-[var(--nox-bg-surface)] border border-[var(--nox-border-default)] p-2.5 lg:hidden hover:bg-[var(--nox-bg-hover)] transition-colors"
+        aria-label="Toggle menu"
       >
-        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {mobileOpen ? (
+          <X className="h-5 w-5 text-[var(--nox-text-primary)]" />
+        ) : (
+          <Menu className="h-5 w-5 text-[var(--nox-text-primary)]" />
+        )}
       </button>
 
       {/* Overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -53,66 +64,67 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 h-screen w-64 transform bg-zinc-900 border-r border-zinc-800 transition-transform duration-200 lg:translate-x-0",
+          "fixed left-0 top-0 z-40 h-screen w-64 transform bg-[var(--nox-bg-elevated)] border-r border-[var(--nox-border-subtle)] transition-transform duration-200 ease-out lg:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex h-full flex-col">
-          {/* Logo */}
-          <div className="flex h-16 items-center gap-2 border-b border-zinc-800 px-6">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-600">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-4 w-4 text-white"
-              >
-                <path d="M8 2h8l4 10H4L8 2z" />
-                <path d="M12 12v10" />
-                <path d="M8 22h8" />
-              </svg>
-            </div>
-            <span className="font-bold text-lg">NOXZIPPER</span>
+          {/* Brand Mark */}
+          <div className="flex items-center justify-center border-b border-[var(--nox-border-subtle)] p-3">
+            <Link href="/" className="block w-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/noxzipper-logo.png"
+                alt="NOXZIPPER"
+                className="w-full h-auto object-contain"
+              />
+            </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-4">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-orange-600/20 text-orange-500"
-                      : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
-                </Link>
-              );
-            })}
+          <nav className="flex-1 py-4 px-3">
+            <div className="space-y-1">
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                      active
+                        ? "bg-[var(--nox-accent-muted)] text-[var(--nox-accent)]"
+                        : "text-[var(--nox-text-secondary)] hover:bg-[var(--nox-bg-hover)] hover:text-[var(--nox-text-primary)]"
+                    )}
+                  >
+                    <item.icon
+                      className={cn(
+                        "h-5 w-5 transition-colors",
+                        active ? "text-[var(--nox-accent)]" : "text-[var(--nox-text-muted)] group-hover:text-[var(--nox-text-secondary)]"
+                      )}
+                    />
+                    <span className="flex-1">{item.label}</span>
+                    {active && (
+                      <ChevronRight className="h-4 w-4 text-[var(--nox-accent)]" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           </nav>
 
-          {/* User section */}
-          <div className="border-t border-zinc-800 p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium">
-                {session?.user?.name?.[0] || "A"}
+          {/* User Section */}
+          <div className="border-t border-[var(--nox-border-subtle)] p-4">
+            <div className="flex items-center gap-3 mb-3 px-1">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--nox-bg-surface)] border border-[var(--nox-border-default)] text-sm font-semibold text-[var(--nox-text-primary)]">
+                {session?.user?.name?.[0]?.toUpperCase() || "A"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">
+                <p className="text-sm font-medium text-[var(--nox-text-primary)] truncate">
                   {session?.user?.name || "Admin"}
                 </p>
-                <p className="text-xs text-zinc-500 truncate">
+                <p className="text-xs text-[var(--nox-text-muted)] truncate">
                   {session?.user?.email}
                 </p>
               </div>
@@ -120,12 +132,19 @@ export function Sidebar() {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-zinc-400 hover:text-zinc-100"
+              className="w-full justify-start text-[var(--nox-text-muted)] hover:text-[var(--nox-text-primary)] hover:bg-[var(--nox-bg-hover)]"
               onClick={() => signOut({ callbackUrl: "/login" })}
             >
               <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </Button>
+          </div>
+
+          {/* K13 Projects Footprint */}
+          <div className="px-4 pb-3">
+            <p className="text-[10px] text-[var(--nox-text-muted)]/40 text-center tracking-wide">
+              Built by K13 Projects Software Studios
+            </p>
           </div>
         </div>
       </aside>
