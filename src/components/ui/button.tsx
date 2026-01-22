@@ -7,8 +7,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[var(--nox-accent)] text-white shadow-sm hover:bg-[var(--nox-accent-hover)] active:scale-[0.98]",
-        destructive: "bg-[var(--nox-error)] text-white shadow-sm hover:bg-red-700 active:scale-[0.98]",
+        default: "bg-[var(--nox-accent)] text-[#1a1a1f] shadow-sm hover:bg-[var(--nox-accent-hover)] active:scale-[0.98]",
+        destructive: "bg-[var(--nox-error)] text-[#1a1a1f] shadow-sm hover:opacity-90 active:scale-[0.98]",
         outline: "border border-[var(--nox-border-default)] bg-transparent text-[var(--nox-text-primary)] shadow-sm hover:bg-[var(--nox-bg-hover)] hover:border-[var(--nox-border-strong)]",
         secondary: "bg-[var(--nox-bg-surface)] text-[var(--nox-text-primary)] shadow-sm border border-[var(--nox-border-subtle)] hover:bg-[var(--nox-bg-hover)]",
         ghost: "text-[var(--nox-text-secondary)] hover:bg-[var(--nox-bg-hover)] hover:text-[var(--nox-text-primary)]",

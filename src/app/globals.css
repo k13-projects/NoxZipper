@@ -1,47 +1,47 @@
 @import "tailwindcss";
 
 /* ============================================
-   NOXZIPPER Minimal Design System
-   Inspired by Robinhood - Clean & Readable
+   NOXZIPPER Pastel Design System
+   Soft & Bright - Easy on the Eyes
    ============================================ */
 
 :root {
-  /* Background Colors - True Black */
-  --nox-bg-base: #000000;
-  --nox-bg-elevated: #0a0a0a;
-  --nox-bg-surface: #121212;
-  --nox-bg-hover: #1a1a1a;
+  /* Background Colors - Soft Dark */
+  --nox-bg-base: #0d0d0d;
+  --nox-bg-elevated: #141418;
+  --nox-bg-surface: #1a1a1f;
+  --nox-bg-hover: #242428;
 
-  /* Text Colors - High Contrast */
-  --nox-text-primary: #ffffff;
-  --nox-text-secondary: #9da0a5;
-  --nox-text-muted: #6b7075;
-  --nox-text-disabled: #404040;
+  /* Text Colors - Softer Contrast */
+  --nox-text-primary: #f5f5f7;
+  --nox-text-secondary: #a8aab3;
+  --nox-text-muted: #6e7179;
+  --nox-text-disabled: #454550;
 
-  /* Border Colors - Subtle */
-  --nox-border-subtle: #1f1f1f;
-  --nox-border-default: #2a2a2a;
-  --nox-border-strong: #3a3a3a;
+  /* Border Colors - Gentle */
+  --nox-border-subtle: #252528;
+  --nox-border-default: #32323a;
+  --nox-border-strong: #45454f;
 
-  /* Accent - Robinhood Green */
-  --nox-accent: #00c805;
-  --nox-accent-hover: #00a804;
-  --nox-accent-muted: rgba(0, 200, 5, 0.15);
-  --nox-accent-subtle: rgba(0, 200, 5, 0.08);
+  /* Accent - Soft Mint/Teal */
+  --nox-accent: #7DD3C0;
+  --nox-accent-hover: #6BC4B0;
+  --nox-accent-muted: rgba(125, 211, 192, 0.18);
+  --nox-accent-subtle: rgba(125, 211, 192, 0.10);
 
-  /* Minimal Status Colors - Just Green, Red, Gray */
-  --nox-status-scheduled: #6b7075;
-  --nox-status-completed: #00c805;
-  --nox-status-invoiced: #00c805;
-  --nox-status-paid: #00c805;
-  --nox-status-overdue: #ff5000;
-  --nox-status-cancelled: #ff5000;
+  /* Pastel Status Colors */
+  --nox-status-scheduled: #8B8FA3;
+  --nox-status-completed: #81C995;
+  --nox-status-invoiced: #A8D8EA;
+  --nox-status-paid: #81C995;
+  --nox-status-overdue: #F8AFA6;
+  --nox-status-cancelled: #E0A8A8;
 
-  /* Semantic Colors - Minimal */
-  --nox-success: #00c805;
-  --nox-warning: #ffb800;
-  --nox-error: #ff5000;
-  --nox-info: #9da0a5;
+  /* Semantic Colors - Soft Pastels */
+  --nox-success: #81C995;
+  --nox-warning: #FFEAA7;
+  --nox-error: #F8AFA6;
+  --nox-info: #A8D8EA;
 
   /* Legacy compatibility */
   --background: var(--nox-bg-base);
@@ -217,8 +217,8 @@ body {
 }
 
 @keyframes pulse-accent {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 5, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(0, 200, 5, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(125, 211, 192, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(125, 211, 192, 0); }
 }
 
 @keyframes shine {
@@ -329,12 +329,12 @@ body {
    ============================================ */
 
 .table-row-overdue {
-  background: rgba(239, 68, 68, 0.05) !important;
+  background: rgba(248, 175, 166, 0.08) !important;
   border-left: 3px solid var(--nox-status-overdue);
 }
 
 .table-row-overdue:hover {
-  background: rgba(239, 68, 68, 0.08) !important;
+  background: rgba(248, 175, 166, 0.12) !important;
 }
 
 /* ============================================
