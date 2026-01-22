@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate, formatCurrency } from "@/lib/utils";
-import { Plus, Filter, X } from "lucide-react";
+import { Filter, X } from "lucide-react";
 import Link from "next/link";
 
 interface Job {
@@ -104,32 +104,20 @@ export default function JobsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Jobs</h1>
-            <p className="text-zinc-400">Manage scheduled cleaning jobs</p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              Filters
-              {hasActiveFilters && (
-                <span className="ml-2 rounded-full bg-orange-600 px-2 py-0.5 text-xs">
-                  Active
-                </span>
-              )}
-            </Button>
-            <Link href="/jobs/new">
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Job
-              </Button>
-            </Link>
-          </div>
+        {/* Filter Toggle */}
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Filter className="mr-2 h-4 w-4" />
+            Filters
+            {hasActiveFilters && (
+              <span className="ml-2 rounded-full bg-orange-600 px-2 py-0.5 text-xs">
+                Active
+              </span>
+            )}
+          </Button>
         </div>
 
         {/* Filters */}

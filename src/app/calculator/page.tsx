@@ -34,14 +34,6 @@ export default function CalculatorPage() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold">Calculator</h1>
-          <p className="text-zinc-400">
-            Calculate revenue splits and estimate annual projections
-          </p>
-        </div>
-
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Single Job Calculator */}
           <Card>

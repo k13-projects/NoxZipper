@@ -90,12 +90,6 @@ export default function CalendarPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold">Calendar</h1>
-          <p className="text-zinc-400">View and manage scheduled jobs</p>
-        </div>
-
         {/* Legend */}
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2">

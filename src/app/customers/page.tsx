@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Phone, MapPin } from "lucide-react";
+import { Search, Phone, MapPin } from "lucide-react";
 import Link from "next/link";
 
 interface Customer {
@@ -78,22 +78,6 @@ export default function CustomersPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Customers</h1>
-            <p className="text-zinc-400">
-              Manage your restaurant customers
-            </p>
-          </div>
-          <Link href="/customers/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Customer
-            </Button>
-          </Link>
-        </div>
-
         {/* Search */}
         <Card>
           <CardContent className="pt-6">
