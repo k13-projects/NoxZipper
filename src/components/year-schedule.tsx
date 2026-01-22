@@ -189,10 +189,10 @@ export function YearSchedule() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 overflow-x-auto">
-        <div className="min-w-[700px]">
+      <CardContent className="pt-4">
+        <div className="w-full">
           {/* Day numbers header */}
-          <div className="flex gap-[2px] mb-1">
+          <div className="flex gap-1 mb-1">
             <div className="w-10 shrink-0" />
             {Array.from({ length: 31 }, (_, i) => (
               <div
@@ -205,9 +205,9 @@ export function YearSchedule() {
           </div>
 
           {/* Month rows */}
-          <div className="space-y-[2px]">
+          <div className="space-y-1">
             {months.map((month) => (
-              <div key={month.name} className="flex gap-[2px]">
+              <div key={month.name} className="flex gap-1">
                 <div className="w-10 shrink-0 text-xs font-medium text-[var(--nox-text-secondary)] flex items-center">
                   {month.name}
                 </div>
@@ -216,7 +216,7 @@ export function YearSchedule() {
                     return (
                       <div
                         key={dayIndex}
-                        className="flex-1 aspect-square min-h-[14px] rounded-sm bg-transparent"
+                        className="flex-1 h-5 rounded-sm bg-transparent"
                       />
                     );
                   }
@@ -229,10 +229,9 @@ export function YearSchedule() {
                     <div
                       key={dayIndex}
                       className={`
-                        flex-1 aspect-square min-h-[14px] rounded-sm cursor-pointer transition-all duration-150
+                        flex-1 h-5 rounded-sm cursor-pointer transition-all duration-150
                         ${getBoxStyles(jobCount, isPast, isToday)}
                         ${jobCount > 0 && !isToday ? "hover:ring-1 hover:ring-[var(--nox-accent)] hover:opacity-100" : ""}
-                        ${!isPast && !isToday ? "hover:scale-110" : ""}
                       `}
                       onMouseEnter={(e) => handleMouseEnter(day, e)}
                       onMouseLeave={() => setHoveredDay(null)}

@@ -24,18 +24,24 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
   const dayJobsMap = useMemo(() => {
     const map = new Map<string, number>();
     const jobsPerYear = frequency === "QUARTERLY" ? 4 : 2;
-    const monthsBetween = frequency === "QUARTERLY" ? 3 : 6;
+    const daysPerPeriod = frequency === "QUARTERLY" ? 90 : 180; // Days in each service period
 
     for (let c = 0; c < numCustomers; c++) {
-      const customerOffset = Math.floor((c / numCustomers) * monthsBetween * 30);
-
       for (let j = 0; j < jobsPerYear; j++) {
-        const baseDate = addMonths(startDate, j * monthsBetween);
-        let jobDate = addDays(baseDate, customerOffset % 28);
+        // Spread each customer's job within their service period
+        // Each period starts at: j * daysPerPeriod days into the year
+        const periodStart = j * daysPerPeriod;
 
+        // Distribute customers evenly across business days in the period
+        // Use customer index to determine their day within the period
+        const dayInPeriod = Math.floor((c / numCustomers) * daysPerPeriod);
+
+        let jobDate = addDays(startDate, periodStart + dayInPeriod);
+
+        // Adjust to a weekday (Mon-Fri)
         const dayOfWeek = getDay(jobDate);
-        if (dayOfWeek === 0) jobDate = addDays(jobDate, 1);
-        if (dayOfWeek === 6) jobDate = addDays(jobDate, 2);
+        if (dayOfWeek === 0) jobDate = addDays(jobDate, 1); // Sunday -> Monday
+        if (dayOfWeek === 6) jobDate = addDays(jobDate, 2); // Saturday -> Monday
 
         if (jobDate >= startDate && jobDate <= endDate) {
           const dateKey = format(jobDate, "yyyy-MM-dd");
@@ -146,10 +152,10 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 overflow-x-auto">
-        <div className="min-w-[700px]">
+      <CardContent className="pt-4">
+        <div className="w-full">
           {/* Day numbers header */}
-          <div className="flex gap-[2px] mb-1">
+          <div className="flex gap-1 mb-1">
             <div className="w-10 shrink-0" />
             {Array.from({ length: 31 }, (_, i) => (
               <div
@@ -162,9 +168,9 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
           </div>
 
           {/* Month rows */}
-          <div className="space-y-[2px]">
+          <div className="space-y-1">
             {months.map((month) => (
-              <div key={month.name} className="flex gap-[2px]">
+              <div key={month.name} className="flex gap-1">
                 <div className="w-10 shrink-0 text-xs font-medium text-[var(--nox-text-secondary)] flex items-center">
                   {month.name}
                 </div>
@@ -173,7 +179,7 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
                     return (
                       <div
                         key={dayIndex}
-                        className="flex-1 aspect-square min-h-[14px] rounded-sm bg-transparent"
+                        className="flex-1 h-5 rounded-sm bg-transparent"
                       />
                     );
                   }
@@ -182,7 +188,7 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
                     <div
                       key={dayIndex}
                       className={`
-                        flex-1 aspect-square min-h-[14px] rounded-sm
+                        flex-1 h-5 rounded-sm
                         ${getBoxStyles(day.jobCount)}
                       `}
                     />
