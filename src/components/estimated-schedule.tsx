@@ -57,14 +57,31 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
     return map;
   }, [numCustomers, frequency, startDate, endDate]);
 
-  // Get color based on job count (all future/estimated)
+  // Get color based on job count
+  // 1 team can handle up to ~2-3 jobs/day comfortably
+  // 4+ jobs/day suggests need for 2 teams
   const getBoxStyles = (count: number) => {
     if (count === 0) return "bg-[var(--nox-bg-hover)]";
-    if (count === 1) return "bg-[var(--nox-accent)]/40";
-    if (count === 2) return "bg-[var(--nox-accent)]/60";
-    if (count === 3) return "bg-[var(--nox-accent)]/80";
-    return "bg-[var(--nox-accent)]";
+    if (count === 1) return "bg-[var(--nox-accent)]/30";
+    if (count === 2) return "bg-[var(--nox-accent)]/50";
+    if (count === 3) return "bg-[var(--nox-accent)]/70";
+    if (count === 4) return "bg-[var(--nox-accent)]";
+    // 5+ jobs = needs 2 teams (warning colors)
+    if (count === 5) return "bg-amber-500/60";
+    if (count === 6) return "bg-amber-500/80";
+    if (count === 7) return "bg-amber-500";
+    // 8+ = critical overload
+    return "bg-red-500";
   };
+
+  // Calculate days needing 2 teams
+  const daysNeeding2Teams = useMemo(() => {
+    let count = 0;
+    dayJobsMap.forEach((jobCount) => {
+      if (jobCount >= 5) count++;
+    });
+    return count;
+  }, [dayJobsMap]);
 
   // Organize days into weeks
   const weeks = useMemo(() => {
@@ -135,16 +152,26 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
               Preview of workload distribution based on your inputs
             </p>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[var(--nox-text-muted)]">
-            <span>Less</span>
-            <div className="flex gap-1">
-              <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-bg-hover)]" />
-              <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/40" />
-              <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/60" />
-              <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/80" />
-              <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]" />
+          <div className="flex items-center gap-4 text-xs text-[var(--nox-text-muted)]">
+            <div className="flex items-center gap-2">
+              <span>1 Team</span>
+              <div className="flex gap-1">
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-bg-hover)]" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/30" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/50" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/70" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]" />
+              </div>
             </div>
-            <span>More</span>
+            <div className="flex items-center gap-2">
+              <span>2 Teams</span>
+              <div className="flex gap-1">
+                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/60" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500/80" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-amber-500" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-red-500" />
+              </div>
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -190,10 +217,9 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
                       <div
                         key={dayIndex}
                         className={`
-                          w-full aspect-square min-h-4 rounded-sm transition-all duration-150
+                          w-full aspect-square min-h-4 rounded-sm
                           ${isCurrentYear ? getBoxStyles(day.jobCount) : "bg-transparent"}
                         `}
-                        title={isCurrentYear && day.jobCount > 0 ? `${day.jobCount} estimated job${day.jobCount > 1 ? 's' : ''} - ${format(day.date, "MMM d")}` : undefined}
                       />
                     );
                   })}
@@ -204,7 +230,7 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-[var(--nox-border-subtle)]">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[var(--nox-border-subtle)]">
           <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
             <p className="text-3xl font-bold text-[var(--nox-text-primary)]">{totalJobs}</p>
             <p className="text-xs text-[var(--nox-text-muted)] mt-1">Total Jobs/Year</p>
@@ -216,6 +242,12 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
           <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
             <p className="text-3xl font-bold text-[var(--nox-text-secondary)]">{(totalJobs / 52).toFixed(1)}</p>
             <p className="text-xs text-[var(--nox-text-muted)] mt-1">Avg Jobs/Week</p>
+          </div>
+          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+            <p className={`text-3xl font-bold ${daysNeeding2Teams > 0 ? "text-amber-500" : "text-[var(--nox-success)]"}`}>
+              {daysNeeding2Teams}
+            </p>
+            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Days Need 2 Teams</p>
           </div>
         </div>
       </CardContent>
