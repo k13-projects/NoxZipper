@@ -12,12 +12,12 @@ import {
   Calendar,
   AlertTriangle,
   DollarSign,
-  Wrench,
-  User,
-  TrendingUp,
-  Plus,
+  Receipt,
+  CheckCircle,
   RefreshCw,
+  ArrowRight,
 } from "lucide-react";
+import { YearSchedule } from "@/components/year-schedule";
 import Link from "next/link";
 
 interface Stats {
@@ -25,10 +25,16 @@ interface Stats {
   totalJobsThisYear: number;
   upcomingJobs: number;
   overdueJobs: number;
-  revenueThisYear: number;
-  operatorTotalThisYear: number;
-  adminTotalThisYear: number;
-  salesTotalThisYear: number;
+  unpaidInvoicesCount: number;
+  unpaidInvoicesAmount: number;
+  billedThisYear: number;
+  billedOperator: number;
+  billedAdmin: number;
+  billedSales: number;
+  collectedThisYear: number;
+  collectedOperator: number;
+  collectedAdmin: number;
+  collectedSales: number;
 }
 
 export default function DashboardPage() {
@@ -83,162 +89,218 @@ export default function DashboardPage() {
     );
   }
 
-  const kpiCards = [
-    {
-      title: "Total Customers",
-      value: stats?.totalCustomers || 0,
-      icon: Users,
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-    },
-    {
-      title: "Jobs This Year",
-      value: stats?.totalJobsThisYear || 0,
-      icon: Briefcase,
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-    },
-    {
-      title: "Upcoming (30 days)",
-      value: stats?.upcomingJobs || 0,
-      icon: Calendar,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
-    },
-    {
-      title: "Overdue Jobs",
-      value: stats?.overdueJobs || 0,
-      icon: AlertTriangle,
-      color: "text-red-500",
-      bgColor: "bg-red-500/10",
-    },
-  ];
-
-  const revenueCards = [
-    {
-      title: "Revenue This Year",
-      value: formatCurrency(stats?.revenueThisYear || 0),
-      icon: DollarSign,
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/10",
-    },
-    {
-      title: "Operator Total (Baha)",
-      value: formatCurrency(stats?.operatorTotalThisYear || 0),
-      subtitle: "80% share",
-      icon: Wrench,
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
-    },
-    {
-      title: "Admin Total (Kazim)",
-      value: formatCurrency(stats?.adminTotalThisYear || 0),
-      subtitle: "10% share",
-      icon: User,
-      color: "text-cyan-500",
-      bgColor: "bg-cyan-500/10",
-    },
-    {
-      title: "Sales Total (Eren)",
-      value: formatCurrency(stats?.salesTotalThisYear || 0),
-      subtitle: "10% share",
-      icon: TrendingUp,
-      color: "text-pink-500",
-      bgColor: "bg-pink-500/10",
-    },
-  ];
-
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-zinc-400">
-              Welcome to NOXZIPPER Kitchen Exhaust Hood Cleaning
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Link href="/customers/new">
-              <Button size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Customer
-              </Button>
-            </Link>
-            <Link href="/jobs/new">
-              <Button size="sm" variant="secondary">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Job
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* KPI Cards */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {kpiCards.map((card) => (
-            <Card key={card.title}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-zinc-400">
-                  {card.title}
-                </CardTitle>
-                <div className={`p-2 rounded-md ${card.bgColor}`}>
-                  <card.icon className={`h-4 w-4 ${card.color}`} />
+        {/* Collections Alert - Prominent at top */}
+        {(stats?.unpaidInvoicesCount || 0) > 0 && (
+          <div className="relative overflow-hidden rounded-xl border border-[var(--nox-accent)]/30 bg-gradient-to-r from-[var(--nox-accent)]/10 to-transparent p-6">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[var(--nox-accent)]" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-accent)]/20">
+                  <Receipt className="h-6 w-6 text-[var(--nox-accent)]" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{card.value}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Revenue Cards */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4">Revenue Split (Completed/Invoiced)</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {revenueCards.map((card) => (
-              <Card key={card.title}>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium text-zinc-400">
-                    {card.title}
-                  </CardTitle>
-                  <div className={`p-2 rounded-md ${card.bgColor}`}>
-                    <card.icon className={`h-4 w-4 ${card.color}`} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{card.value}</div>
-                  {card.subtitle && (
-                    <p className="text-xs text-zinc-500 mt-1">{card.subtitle}</p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                <div>
+                  <p className="font-semibold text-[var(--nox-accent)]">Outstanding Collections</p>
+                  <p className="text-[var(--nox-text-secondary)]">
+                    {stats?.unpaidInvoicesCount} unpaid invoice{stats?.unpaidInvoicesCount !== 1 ? "s" : ""} totaling{" "}
+                    <span className="font-semibold text-[var(--nox-text-primary)]">
+                      {formatCurrency(stats?.unpaidInvoicesAmount || 0)}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <Link href="/collections">
+                <Button>
+                  View Collections
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
+        )}
+
+        {/* KPI Grid */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card className="kpi-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Customers</p>
+                  <p className="text-3xl font-bold text-[var(--nox-text-primary)]">
+                    {stats?.totalCustomers || 0}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-bg-hover)]">
+                  <Users className="h-6 w-6 text-[var(--nox-text-muted)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="kpi-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Jobs This Year</p>
+                  <p className="text-3xl font-bold text-[var(--nox-text-primary)]">
+                    {stats?.totalJobsThisYear || 0}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-bg-hover)]">
+                  <Briefcase className="h-6 w-6 text-[var(--nox-text-muted)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="kpi-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Upcoming (30d)</p>
+                  <p className="text-3xl font-bold text-[var(--nox-accent)]">
+                    {stats?.upcomingJobs || 0}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-accent)]/10">
+                  <Calendar className="h-6 w-6 text-[var(--nox-accent)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="kpi-card">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-label mb-1">Overdue</p>
+                  <p className="text-3xl font-bold text-[var(--nox-error)]">
+                    {stats?.overdueJobs || 0}
+                  </p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-error)]/10">
+                  <AlertTriangle className="h-6 w-6 text-[var(--nox-error)]" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Quick Actions */}
+        {/* Year Schedule Overview */}
+        <YearSchedule />
+
+        {/* Revenue Section */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Billed */}
+          <Card>
+            <CardHeader className="border-b border-[var(--nox-border-subtle)]">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-bg-hover)]">
+                  <DollarSign className="h-5 w-5 text-[var(--nox-text-secondary)]" />
+                </div>
+                <div>
+                  <CardTitle className="text-base">Billed This Year</CardTitle>
+                  <p className="text-xs text-[var(--nox-text-muted)]">Invoiced + Paid jobs</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-[var(--nox-text-primary)] mb-6">
+                {formatCurrency(stats?.billedThisYear || 0)}
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Operator (Baha)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">80%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.billedOperator || 0)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Admin (Kazim)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.billedAdmin || 0)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Sales (Eren)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.billedSales || 0)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Collected */}
+          <Card>
+            <CardHeader className="border-b border-[var(--nox-border-subtle)]">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-accent)]/10">
+                  <CheckCircle className="h-5 w-5 text-[var(--nox-accent)]" />
+                </div>
+                <div>
+                  <CardTitle className="text-base">Collected This Year</CardTitle>
+                  <p className="text-xs text-[var(--nox-text-muted)]">Paid jobs only</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="text-3xl font-bold text-[var(--nox-accent)] mb-6">
+                {formatCurrency(stats?.collectedThisYear || 0)}
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Operator (Baha)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">80%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.collectedOperator || 0)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Admin (Kazim)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.collectedAdmin || 0)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-[var(--nox-text-secondary)]">Sales (Eren)</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
+                  </div>
+                  <span className="font-medium">{formatCurrency(stats?.collectedSales || 0)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Schedule Generation */}
         <Card>
-          <CardHeader>
-            <CardTitle>Schedule Generation</CardTitle>
+          <CardHeader className="border-b border-[var(--nox-border-subtle)]">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-bg-hover)]">
+                <RefreshCw className="h-5 w-5 text-[var(--nox-text-secondary)]" />
+              </div>
+              <div>
+                <CardTitle className="text-base">Schedule Generation</CardTitle>
+                <p className="text-xs text-[var(--nox-text-muted)]">Auto-create jobs based on service frequency</p>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-zinc-400 mb-4">
-              Generate future job schedules for all customers based on their frequency settings.
-            </p>
-            <div className="flex flex-wrap gap-2">
+          <CardContent className="pt-6">
+            <div className="flex flex-wrap gap-3">
               <Button
                 variant="outline"
                 onClick={() => handleGenerateSchedules(12)}
                 disabled={generating}
               >
-                {generating ? (
-                  <Spinner size="sm" className="mr-2" />
-                ) : (
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                )}
+                {generating && <Spinner size="sm" className="mr-2" />}
                 Generate Next 12 Months
               </Button>
               <Button
@@ -246,11 +308,7 @@ export default function DashboardPage() {
                 onClick={() => handleGenerateSchedules(24)}
                 disabled={generating}
               >
-                {generating ? (
-                  <Spinner size="sm" className="mr-2" />
-                ) : (
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                )}
+                {generating && <Spinner size="sm" className="mr-2" />}
                 Generate Next 24 Months
               </Button>
             </div>

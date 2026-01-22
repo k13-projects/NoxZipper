@@ -32,11 +32,13 @@ interface CalendarEvent {
   };
 }
 
+// Pastel color scheme: soft & muted teal-green
 const statusColors: Record<string, string> = {
-  SCHEDULED: "#52525b", // zinc-600
-  COMPLETED: "#22c55e", // green-500
-  INVOICED: "#3b82f6", // blue-500
-  CANCELLED: "#ef4444", // red-500
+  SCHEDULED: "#8E92A4",
+  COMPLETED: "#7AB38D",
+  INVOICED: "#9AC5D4",
+  PAID: "#7AB38D",
+  CANCELLED: "#D9A8A0",
 };
 
 export default function CalendarPage() {
@@ -89,29 +91,23 @@ export default function CalendarPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-bold">Calendar</h1>
-          <p className="text-zinc-400">View and manage scheduled jobs</p>
-        </div>
-
-        {/* Legend */}
-        <div className="flex flex-wrap gap-4">
+        {/* Legend - Soft Pastel */}
+        <div className="flex flex-wrap gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-zinc-600"></div>
-            <span className="text-sm">Scheduled</span>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#8E92A4" }}></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Scheduled</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-500"></div>
-            <span className="text-sm">Completed</span>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#7AB38D" }}></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Completed / Paid</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-500"></div>
-            <span className="text-sm">Invoiced</span>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#9AC5D4" }}></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Invoiced</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-red-500"></div>
-            <span className="text-sm">Cancelled</span>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#D9A8A0" }}></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Cancelled</span>
           </div>
         </div>
 
@@ -147,10 +143,10 @@ export default function CalendarPage() {
         </Card>
 
         {/* Stats for current view */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-5">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Total Jobs</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Total Jobs</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{events.length}</div>
@@ -158,31 +154,41 @@ export default function CalendarPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Scheduled</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Scheduled</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-zinc-400">
+              <div className="text-2xl font-bold text-[var(--nox-text-secondary)]">
                 {events.filter((e) => e.extendedProps.status === "SCHEDULED").length}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Completed</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Completed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-500">
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
                 {events.filter((e) => e.extendedProps.status === "COMPLETED").length}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Invoiced</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Invoiced</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-500">
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
                 {events.filter((e) => e.extendedProps.status === "INVOICED").length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Paid</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
+                {events.filter((e) => e.extendedProps.status === "PAID").length}
               </div>
             </CardContent>
           </Card>

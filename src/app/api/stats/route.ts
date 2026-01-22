@@ -16,7 +16,9 @@ export async function GET() {
       totalJobsThisYear,
       upcomingJobs,
       overdueJobs,
-      revenueData,
+      unpaidInvoices,
+      billedData,
+      collectedData,
     ] = await Promise.all([
       // Total customers
       prisma.customer.count(),
@@ -42,7 +44,7 @@ export async function GET() {
         },
       }),
 
-      // Overdue jobs (scheduled before today and not completed/invoiced/cancelled)
+      // Overdue jobs (scheduled before today and not completed/invoiced/paid/cancelled)
       prisma.job.count({
         where: {
           scheduledDate: {
@@ -52,7 +54,19 @@ export async function GET() {
         },
       }),
 
-      // Revenue data for completed/invoiced jobs this year
+      // Unpaid invoices (status = INVOICED and paidAt is null)
+      prisma.job.aggregate({
+        where: {
+          status: "INVOICED",
+          paidAt: null,
+        },
+        _count: true,
+        _sum: {
+          price: true,
+        },
+      }),
+
+      // Billed data (INVOICED + PAID) this year
       prisma.job.aggregate({
         where: {
           scheduledDate: {
@@ -60,8 +74,25 @@ export async function GET() {
             lte: yearEnd,
           },
           status: {
-            in: ["COMPLETED", "INVOICED"],
+            in: ["INVOICED", "PAID"],
           },
+        },
+        _sum: {
+          price: true,
+          operatorShare: true,
+          adminShare: true,
+          salesShare: true,
+        },
+      }),
+
+      // Collected data (PAID only) this year
+      prisma.job.aggregate({
+        where: {
+          scheduledDate: {
+            gte: yearStart,
+            lte: yearEnd,
+          },
+          status: "PAID",
         },
         _sum: {
           price: true,
@@ -77,10 +108,19 @@ export async function GET() {
       totalJobsThisYear,
       upcomingJobs,
       overdueJobs,
-      revenueThisYear: revenueData._sum.price || 0,
-      operatorTotalThisYear: revenueData._sum.operatorShare || 0,
-      adminTotalThisYear: revenueData._sum.adminShare || 0,
-      salesTotalThisYear: revenueData._sum.salesShare || 0,
+      // Unpaid invoices
+      unpaidInvoicesCount: unpaidInvoices._count || 0,
+      unpaidInvoicesAmount: unpaidInvoices._sum.price || 0,
+      // Billed (INVOICED + PAID)
+      billedThisYear: billedData._sum.price || 0,
+      billedOperator: billedData._sum.operatorShare || 0,
+      billedAdmin: billedData._sum.adminShare || 0,
+      billedSales: billedData._sum.salesShare || 0,
+      // Collected (PAID only)
+      collectedThisYear: collectedData._sum.price || 0,
+      collectedOperator: collectedData._sum.operatorShare || 0,
+      collectedAdmin: collectedData._sum.adminShare || 0,
+      collectedSales: collectedData._sum.salesShare || 0,
     });
   } catch (error) {
     console.error("Error fetching stats:", error);

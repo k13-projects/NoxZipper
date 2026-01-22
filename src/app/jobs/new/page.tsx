@@ -136,7 +136,7 @@ function NewJobForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md bg-red-900/50 border border-red-800 p-3 text-sm text-red-200">
+        <div className="rounded-md bg-[var(--nox-error)]/10 border border-[var(--nox-error)]/30 p-3 text-sm text-[var(--nox-error)]">
           {error}
         </div>
       )}
@@ -225,37 +225,37 @@ function NewJobForm() {
             <CardTitle>Revenue Split Preview</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 bg-zinc-800 rounded-lg">
-              <div className="text-sm text-zinc-400">Total Price</div>
-              <div className="text-3xl font-bold text-green-500">
+            <div className="p-4 bg-[var(--nox-bg-hover)] rounded-lg">
+              <div className="text-sm text-[var(--nox-text-muted)]">Total Price</div>
+              <div className="text-3xl font-bold text-[var(--nox-accent)]">
                 {formatCurrency(formData.price)}
               </div>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-zinc-800/50 rounded">
+              <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded">
                 <div>
                   <span className="font-medium">{formData.operatorName}</span>
-                  <span className="text-xs text-zinc-500 ml-2">Operator (80%)</span>
+                  <span className="text-xs text-[var(--nox-text-muted)] ml-2">Operator (80%)</span>
                 </div>
-                <span className="font-bold text-orange-500">
+                <span className="font-bold">
                   {formatCurrency(shares.operator)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-zinc-800/50 rounded">
+              <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded">
                 <div>
                   <span className="font-medium">Kazim</span>
-                  <span className="text-xs text-zinc-500 ml-2">Admin (10%)</span>
+                  <span className="text-xs text-[var(--nox-text-muted)] ml-2">Admin (10%)</span>
                 </div>
-                <span className="font-bold text-cyan-500">
+                <span className="font-bold">
                   {formatCurrency(shares.admin)}
                 </span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-zinc-800/50 rounded">
+              <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded">
                 <div>
                   <span className="font-medium">{formData.salesName}</span>
-                  <span className="text-xs text-zinc-500 ml-2">Sales (10%)</span>
+                  <span className="text-xs text-[var(--nox-text-muted)] ml-2">Sales (10%)</span>
                 </div>
-                <span className="font-bold text-pink-500">
+                <span className="font-bold">
                   {formatCurrency(shares.sales)}
                 </span>
               </div>

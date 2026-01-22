@@ -268,7 +268,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                 <p className="text-sm text-zinc-400">Phone</p>
                 <p className="font-medium flex items-center gap-2">
                   <Phone className="h-4 w-4" />
-                  <a href={`tel:${customer.contactPhone}`} className="hover:text-orange-500">
+                  <a href={`tel:${customer.contactPhone}`} className="hover:text-[var(--nox-accent)]">
                     {customer.contactPhone}
                   </a>
                 </p>
@@ -278,7 +278,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
                   <p className="text-sm text-zinc-400">Email</p>
                   <p className="font-medium flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    <a href={`mailto:${customer.contactEmail}`} className="hover:text-orange-500">
+                    <a href={`mailto:${customer.contactEmail}`} className="hover:text-[var(--nox-accent)]">
                       {customer.contactEmail}
                     </a>
                   </p>

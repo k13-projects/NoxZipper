@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
+import { AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +15,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [version, setVersion] = useState("");
+
+  useEffect(() => {
+    fetch("/api/version")
+      .then((res) => res.json())
+      .then((data) => setVersion(data.version))
+      .catch(() => setVersion("1.0.0"));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,39 +50,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-600">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-8 w-8 text-white"
-            >
-              <path d="M8 2h8l4 10H4L8 2z" />
-              <path d="M12 12v10" />
-              <path d="M8 22h8" />
-            </svg>
+    <div className="min-h-screen flex items-center justify-center bg-[var(--nox-bg-base)] p-4">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,var(--nox-border-subtle)_1px,transparent_1px),linear-gradient(to_bottom,var(--nox-border-subtle)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
+
+      <div className="relative w-full max-w-md">
+        {/* Card */}
+        <div className="rounded-2xl border border-[var(--nox-border-subtle)] bg-[var(--nox-bg-surface)] p-8 shadow-2xl">
+          {/* Brand Header */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/noxzipper-logo.png"
+                alt="NOXZIPPER"
+                className="h-40 w-auto object-contain drop-shadow-2xl animate-[logoShine_3s_ease-in-out_infinite]"
+              />
+            </div>
+            <p className="text-sm text-[var(--nox-text-muted)]">
+              Kitchen Exhaust Hood Cleaning
+            </p>
           </div>
-          <CardTitle className="text-2xl font-bold">NOXZIPPER</CardTitle>
-          <CardDescription>
-            Kitchen Exhaust Hood Cleaning Dashboard
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="rounded-md bg-red-900/50 border border-red-800 p-3 text-sm text-red-200">
+              <div className="flex items-center gap-3 rounded-lg bg-[var(--nox-error)]/10 border border-[var(--nox-error)]/30 p-3 text-sm text-[var(--nox-error)]">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
                 {error}
               </div>
             )}
+
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-[var(--nox-text-secondary)]">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -81,10 +92,14 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-[var(--nox-text-secondary)]">
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
@@ -92,17 +107,56 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+
+            <Button type="submit" className="w-full h-11" disabled={loading}>
+              {loading ? (
+                <>
+                  <Spinner size="sm" className="mr-2" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
-          <p className="mt-4 text-center text-xs text-zinc-500">
-            Demo: admin@noxzipper.com / admin123
+
+          {/* Demo Credentials */}
+          <div className="mt-6 pt-6 border-t border-[var(--nox-border-subtle)]">
+            <p className="text-center text-xs text-[var(--nox-text-muted)]">
+              Demo credentials
+            </p>
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <code className="text-xs bg-[var(--nox-bg-hover)] text-[var(--nox-text-secondary)] px-2 py-1 rounded">
+                admin@noxzipper.com
+              </code>
+              <span className="text-[var(--nox-text-muted)]">/</span>
+              <code className="text-xs bg-[var(--nox-bg-hover)] text-[var(--nox-text-secondary)] px-2 py-1 rounded">
+                admin123
+              </code>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <p className="mt-6 text-center text-xs text-[var(--nox-text-muted)]">
+          Fire Safety Compliance System
+        </p>
+      </div>
+
+      {/* K13 Projects Footer - Fixed to bottom */}
+      <div className="fixed bottom-0 left-0 right-0 py-3 text-center space-y-1">
+        <p className="text-[10px] text-[var(--nox-text-muted)]/40 tracking-wide">
+          Built by K13 Projects Software Studios
+        </p>
+        {version && (
+          <p className="text-[10px] italic text-[var(--nox-accent)]/60">
+            version {version}
           </p>
-        </CardContent>
-      </Card>
+        )}
+      </div>
     </div>
   );
 }

@@ -9,7 +9,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "NOXZIPPER - Kitchen Exhaust Hood Cleaning",
-  description: "Internal dashboard for NOXZIPPER kitchen exhaust hood cleaning business",
+  description: "Internal dashboard for NOXZIPPER kitchen exhaust hood cleaning business - Fire Safety Compliance System",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -19,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} antialiased bg-zinc-950 text-zinc-100`}>
+      <body className={`${inter.className} antialiased bg-[var(--nox-bg-base)] text-[var(--nox-text-primary)]`}>
         <Providers>{children}</Providers>
       </body>
     </html>

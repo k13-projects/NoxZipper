@@ -105,7 +105,7 @@ export function CustomerForm({ initialData, isEdit }: CustomerFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="rounded-md bg-red-900/50 border border-red-800 p-3 text-sm text-red-200">
+        <div className="rounded-md bg-[var(--nox-error)]/10 border border-[var(--nox-error)]/30 p-3 text-sm text-[var(--nox-error)]">
           {error}
         </div>
       )}
