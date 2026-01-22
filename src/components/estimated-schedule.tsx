@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { format, startOfYear, endOfYear, eachDayOfInterval, getDay, addDays, addMonths } from "date-fns";
+import { format, startOfYear, endOfYear, getDaysInMonth, getDay, addDays, addMonths } from "date-fns";
 
 interface EstimatedScheduleProps {
   numCustomers: number;
@@ -12,6 +12,7 @@ interface EstimatedScheduleProps {
 interface DayData {
   date: Date;
   jobCount: number;
+  dayOfMonth: number;
 }
 
 export function EstimatedSchedule({ numCustomers, frequency }: EstimatedScheduleProps) {
@@ -19,34 +20,23 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
   const startDate = startOfYear(new Date(year, 0, 1));
   const endDate = endOfYear(new Date(year, 0, 1));
 
-  // Generate all days of the year
-  const allDays = useMemo(() => {
-    return eachDayOfInterval({ start: startDate, end: endDate });
-  }, []);
-
   // Generate estimated job distribution
   const dayJobsMap = useMemo(() => {
     const map = new Map<string, number>();
     const jobsPerYear = frequency === "QUARTERLY" ? 4 : 2;
     const monthsBetween = frequency === "QUARTERLY" ? 3 : 6;
 
-    // Distribute customers across business days (Mon-Fri)
-    // Start from different months to spread the load
     for (let c = 0; c < numCustomers; c++) {
-      // Offset each customer's first service by spreading across the first period
       const customerOffset = Math.floor((c / numCustomers) * monthsBetween * 30);
 
       for (let j = 0; j < jobsPerYear; j++) {
-        // Calculate the approximate date for this job
         const baseDate = addMonths(startDate, j * monthsBetween);
-        let jobDate = addDays(baseDate, customerOffset % 28); // Keep within month
+        let jobDate = addDays(baseDate, customerOffset % 28);
 
-        // Adjust to a weekday (Mon-Fri)
         const dayOfWeek = getDay(jobDate);
-        if (dayOfWeek === 0) jobDate = addDays(jobDate, 1); // Sunday -> Monday
-        if (dayOfWeek === 6) jobDate = addDays(jobDate, 2); // Saturday -> Monday
+        if (dayOfWeek === 0) jobDate = addDays(jobDate, 1);
+        if (dayOfWeek === 6) jobDate = addDays(jobDate, 2);
 
-        // Make sure we're within the year
         if (jobDate >= startDate && jobDate <= endDate) {
           const dateKey = format(jobDate, "yyyy-MM-dd");
           map.set(dateKey, (map.get(dateKey) || 0) + 1);
@@ -65,7 +55,6 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
   const getBoxStyles = (count: number) => {
     if (count === 0) return "bg-[var(--nox-bg-hover)]";
 
-    // Under 120 customers: all green/teal (1 team can handle)
     if (!needs2Teams) {
       if (count === 1) return "bg-[var(--nox-accent)]/30";
       if (count === 2) return "bg-[var(--nox-accent)]/50";
@@ -73,20 +62,17 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
       return "bg-[var(--nox-accent)]";
     }
 
-    // Over 120 customers: show 2-team colors for overflow
     if (count === 1) return "bg-[var(--nox-accent)]/30";
     if (count === 2) return "bg-[var(--nox-accent)]/50";
     if (count === 3) return "bg-[var(--nox-accent)]/70";
     if (count === 4) return "bg-[var(--nox-accent)]";
-    // 5+ jobs = needs 2 teams (warning colors)
     if (count === 5) return "bg-amber-500/60";
     if (count === 6) return "bg-amber-500/80";
     if (count === 7) return "bg-amber-500";
-    // 8+ = critical overload
     return "bg-red-500";
   };
 
-  // Calculate days needing 2 teams (only relevant when over 120 customers)
+  // Calculate days needing 2 teams
   const daysNeeding2Teams = useMemo(() => {
     if (!needs2Teams) return 0;
     let count = 0;
@@ -96,62 +82,32 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
     return count;
   }, [dayJobsMap, needs2Teams]);
 
-  // Organize days into weeks
-  const weeks = useMemo(() => {
-    const result: DayData[][] = [];
-    let currentWeek: DayData[] = [];
+  // Organize days by month
+  const months = useMemo(() => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const result: { name: string; days: (DayData | null)[] }[] = [];
 
-    const firstDayOfWeek = getDay(startDate);
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      currentWeek.push({ date: addDays(startDate, -(firstDayOfWeek - i)), jobCount: 0 });
-    }
+    for (let month = 0; month < 12; month++) {
+      const daysInMonth = getDaysInMonth(new Date(year, month));
+      const days: (DayData | null)[] = [];
 
-    allDays.forEach((day) => {
-      const dateKey = format(day, "yyyy-MM-dd");
-      const jobCount = dayJobsMap.get(dateKey) || 0;
-
-      currentWeek.push({ date: day, jobCount });
-
-      if (currentWeek.length === 7) {
-        result.push(currentWeek);
-        currentWeek = [];
+      for (let day = 1; day <= 31; day++) {
+        if (day <= daysInMonth) {
+          const date = new Date(year, month, day);
+          const dateKey = format(date, "yyyy-MM-dd");
+          const jobCount = dayJobsMap.get(dateKey) || 0;
+          days.push({ date, jobCount, dayOfMonth: day });
+        } else {
+          days.push(null);
+        }
       }
-    });
 
-    if (currentWeek.length > 0) {
-      while (currentWeek.length < 7) {
-        const lastDay = currentWeek[currentWeek.length - 1].date;
-        currentWeek.push({ date: addDays(lastDay, 1), jobCount: 0 });
-      }
-      result.push(currentWeek);
+      result.push({ name: monthNames[month], days });
     }
 
     return result;
-  }, [allDays, dayJobsMap, startDate]);
+  }, [year, dayJobsMap]);
 
-  // Month labels
-  const monthLabels = useMemo(() => {
-    const labels: { month: string; weekIndex: number }[] = [];
-    let lastMonth = -1;
-
-    weeks.forEach((week, weekIndex) => {
-      const firstDayOfWeek = week.find(d => d.date.getFullYear() === year);
-      if (firstDayOfWeek) {
-        const month = firstDayOfWeek.date.getMonth();
-        if (month !== lastMonth) {
-          labels.push({
-            month: format(firstDayOfWeek.date, "MMM"),
-            weekIndex,
-          });
-          lastMonth = month;
-        }
-      }
-    });
-
-    return labels;
-  }, [weeks, year]);
-
-  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const totalJobs = numCustomers * (frequency === "QUARTERLY" ? 4 : 2);
   const jobsPerMonth = totalJobs / 12;
 
@@ -191,56 +147,49 @@ export function EstimatedSchedule({ numCustomers, frequency }: EstimatedSchedule
         </div>
       </CardHeader>
       <CardContent className="pt-6 overflow-x-auto">
-        <div className="w-full">
-          {/* Month labels */}
-          <div className="relative h-6 mb-2">
-            {monthLabels.map((label, i) => (
+        <div className="min-w-[700px]">
+          {/* Day numbers header */}
+          <div className="flex gap-[2px] mb-1">
+            <div className="w-10 shrink-0" />
+            {Array.from({ length: 31 }, (_, i) => (
               <div
                 key={i}
-                className="absolute text-sm font-medium text-[var(--nox-text-secondary)]"
-                style={{
-                  left: `calc(${(label.weekIndex / weeks.length) * 100}% + 36px)`,
-                }}
+                className="flex-1 text-center text-[10px] text-[var(--nox-text-muted)]"
               >
-                {label.month}
+                {i + 1}
               </div>
             ))}
           </div>
 
-          {/* Grid */}
-          <div className="flex gap-[3px]">
-            {/* Day labels */}
-            <div className="flex flex-col gap-[3px] mr-2 pt-0">
-              {dayLabels.map((label) => (
-                <div
-                  key={label}
-                  className="h-4 text-xs text-[var(--nox-text-muted)] flex items-center justify-end pr-1 w-8"
-                >
-                  {label}
+          {/* Month rows */}
+          <div className="space-y-[2px]">
+            {months.map((month) => (
+              <div key={month.name} className="flex gap-[2px]">
+                <div className="w-10 shrink-0 text-xs font-medium text-[var(--nox-text-secondary)] flex items-center">
+                  {month.name}
                 </div>
-              ))}
-            </div>
-
-            {/* Weeks */}
-            <div className="flex-1 flex gap-[3px]">
-              {weeks.map((week, weekIndex) => (
-                <div key={weekIndex} className="flex-1 flex flex-col gap-[3px]">
-                  {week.map((day, dayIndex) => {
-                    const isCurrentYear = day.date.getFullYear() === year;
-
+                {month.days.map((day, dayIndex) => {
+                  if (!day) {
                     return (
                       <div
                         key={dayIndex}
-                        className={`
-                          w-full aspect-square min-h-4 rounded-sm
-                          ${isCurrentYear ? getBoxStyles(day.jobCount) : "bg-transparent"}
-                        `}
+                        className="flex-1 aspect-square min-h-[14px] rounded-sm bg-transparent"
                       />
                     );
-                  })}
-                </div>
-              ))}
-            </div>
+                  }
+
+                  return (
+                    <div
+                      key={dayIndex}
+                      className={`
+                        flex-1 aspect-square min-h-[14px] rounded-sm
+                        ${getBoxStyles(day.jobCount)}
+                      `}
+                    />
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
 

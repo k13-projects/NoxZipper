@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { format, startOfYear, endOfYear, eachDayOfInterval, getDay, addDays, isSameDay, isBefore, startOfDay } from "date-fns";
+import { format, startOfYear, endOfYear, eachDayOfInterval, getDaysInMonth, isSameDay, isBefore, startOfDay } from "date-fns";
 
 interface Job {
   id: string;
@@ -18,6 +18,7 @@ interface Job {
 interface DayData {
   date: Date;
   jobs: Job[];
+  dayOfMonth: number;
 }
 
 export function YearSchedule() {
@@ -49,11 +50,6 @@ export function YearSchedule() {
     fetchJobs();
   }, []);
 
-  // Generate all days of the year
-  const allDays = useMemo(() => {
-    return eachDayOfInterval({ start: startDate, end: endDate });
-  }, []);
-
   // Map jobs to days
   const dayJobsMap = useMemo(() => {
     const map = new Map<string, Job[]>();
@@ -69,9 +65,6 @@ export function YearSchedule() {
 
   // Get color based on job count and past/future status
   const getBoxStyles = (count: number, isPast: boolean, isToday: boolean) => {
-    // Base opacity for past days
-    const pastOpacity = isPast ? "opacity-40" : "";
-
     if (isToday) {
       if (count === 0) return "bg-[var(--nox-accent)]/20 ring-2 ring-[var(--nox-accent)]";
       if (count === 1) return "bg-[var(--nox-accent)]/50 ring-2 ring-[var(--nox-accent)]";
@@ -80,7 +73,6 @@ export function YearSchedule() {
     }
 
     if (isPast) {
-      // Past days - dimmed colors
       if (count === 0) return "bg-[var(--nox-bg-elevated)] opacity-50";
       if (count === 1) return "bg-[var(--nox-text-muted)]/30 opacity-60";
       if (count === 2) return "bg-[var(--nox-text-muted)]/40 opacity-60";
@@ -88,7 +80,6 @@ export function YearSchedule() {
       return "bg-[var(--nox-text-muted)]/60 opacity-60";
     }
 
-    // Future days - vibrant accent colors
     if (count === 0) return "bg-[var(--nox-bg-hover)]";
     if (count === 1) return "bg-[var(--nox-accent)]/40";
     if (count === 2) return "bg-[var(--nox-accent)]/60";
@@ -96,66 +87,33 @@ export function YearSchedule() {
     return "bg-[var(--nox-accent)]";
   };
 
-  // Organize days into weeks (columns) starting from first day of year
-  const weeks = useMemo(() => {
-    const result: DayData[][] = [];
-    let currentWeek: DayData[] = [];
+  // Organize days by month
+  const months = useMemo(() => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const result: { name: string; days: (DayData | null)[] }[] = [];
 
-    // Add empty cells for days before the first day of the year
-    const firstDayOfWeek = getDay(startDate); // 0 = Sunday
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      currentWeek.push({ date: addDays(startDate, -(firstDayOfWeek - i)), jobs: [] });
-    }
+    for (let month = 0; month < 12; month++) {
+      const daysInMonth = getDaysInMonth(new Date(year, month));
+      const days: (DayData | null)[] = [];
 
-    allDays.forEach((day) => {
-      const dateKey = format(day, "yyyy-MM-dd");
-      const dayJobs = dayJobsMap.get(dateKey) || [];
-
-      currentWeek.push({ date: day, jobs: dayJobs });
-
-      if (currentWeek.length === 7) {
-        result.push(currentWeek);
-        currentWeek = [];
+      for (let day = 1; day <= 31; day++) {
+        if (day <= daysInMonth) {
+          const date = new Date(year, month, day);
+          const dateKey = format(date, "yyyy-MM-dd");
+          const dayJobs = dayJobsMap.get(dateKey) || [];
+          days.push({ date, jobs: dayJobs, dayOfMonth: day });
+        } else {
+          days.push(null);
+        }
       }
-    });
 
-    // Add remaining days
-    if (currentWeek.length > 0) {
-      // Fill the rest of the week with empty cells
-      while (currentWeek.length < 7) {
-        const lastDay = currentWeek[currentWeek.length - 1].date;
-        currentWeek.push({ date: addDays(lastDay, 1), jobs: [] });
-      }
-      result.push(currentWeek);
+      result.push({ name: monthNames[month], days });
     }
 
     return result;
-  }, [allDays, dayJobsMap, startDate]);
-
-  // Month labels with better positioning
-  const monthLabels = useMemo(() => {
-    const labels: { month: string; weekIndex: number }[] = [];
-    let lastMonth = -1;
-
-    weeks.forEach((week, weekIndex) => {
-      const firstDayOfWeek = week.find(d => d.date.getFullYear() === year);
-      if (firstDayOfWeek) {
-        const month = firstDayOfWeek.date.getMonth();
-        if (month !== lastMonth) {
-          labels.push({
-            month: format(firstDayOfWeek.date, "MMM"),
-            weekIndex,
-          });
-          lastMonth = month;
-        }
-      }
-    });
-
-    return labels;
-  }, [weeks, year]);
+  }, [year, dayJobsMap]);
 
   const handleMouseEnter = (day: DayData, e: React.MouseEvent) => {
-    if (day.date.getFullYear() !== year) return;
     setHoveredDay(day);
     const rect = e.currentTarget.getBoundingClientRect();
     setTooltipPos({
@@ -171,8 +129,6 @@ export function YearSchedule() {
       router.push(`/calendar`);
     }
   };
-
-  const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   // Calculate stats
   const pastJobs = jobs.filter(j => isBefore(new Date(j.scheduledDate), today));
@@ -205,7 +161,6 @@ export function YearSchedule() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {/* Past/Future Legend */}
             <div className="flex items-center gap-3 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-sm bg-[var(--nox-text-muted)]/40 opacity-60" />
@@ -220,7 +175,6 @@ export function YearSchedule() {
                 <span className="text-[var(--nox-text-muted)]">Today</span>
               </div>
             </div>
-            {/* Intensity Legend */}
             <div className="flex items-center gap-2 text-xs text-[var(--nox-text-muted)]">
               <span>Less</span>
               <div className="flex gap-1">
@@ -236,69 +190,63 @@ export function YearSchedule() {
         </div>
       </CardHeader>
       <CardContent className="pt-6 overflow-x-auto">
-        <div className="w-full">
-          {/* Month labels - positioned absolutely above grid */}
-          <div className="relative h-6 mb-2">
-            {monthLabels.map((label, i) => (
+        <div className="min-w-[700px]">
+          {/* Day numbers header */}
+          <div className="flex gap-[2px] mb-1">
+            <div className="w-10 shrink-0" />
+            {Array.from({ length: 31 }, (_, i) => (
               <div
                 key={i}
-                className="absolute text-sm font-medium text-[var(--nox-text-secondary)]"
-                style={{
-                  left: `calc(${(label.weekIndex / weeks.length) * 100}% + 36px)`,
-                }}
+                className="flex-1 text-center text-[10px] text-[var(--nox-text-muted)]"
               >
-                {label.month}
+                {i + 1}
               </div>
             ))}
           </div>
 
-          {/* Grid */}
-          <div className="flex gap-[3px]">
-            {/* Day labels */}
-            <div className="flex flex-col gap-[3px] mr-2 pt-0">
-              {dayLabels.map((label) => (
-                <div
-                  key={label}
-                  className="h-4 text-xs text-[var(--nox-text-muted)] flex items-center justify-end pr-1 w-8"
-                >
-                  {label}
+          {/* Month rows */}
+          <div className="space-y-[2px]">
+            {months.map((month) => (
+              <div key={month.name} className="flex gap-[2px]">
+                <div className="w-10 shrink-0 text-xs font-medium text-[var(--nox-text-secondary)] flex items-center">
+                  {month.name}
                 </div>
-              ))}
-            </div>
-
-            {/* Weeks - expanded to fill width */}
-            <div className="flex-1 flex gap-[3px]">
-              {weeks.map((week, weekIndex) => (
-                <div key={weekIndex} className="flex-1 flex flex-col gap-[3px]">
-                  {week.map((day, dayIndex) => {
-                    const isCurrentYear = day.date.getFullYear() === year;
-                    const isToday = isSameDay(day.date, today);
-                    const isPast = isBefore(day.date, today) && !isToday;
-                    const jobCount = day.jobs.length;
-
+                {month.days.map((day, dayIndex) => {
+                  if (!day) {
                     return (
                       <div
                         key={dayIndex}
-                        className={`
-                          w-full aspect-square min-h-4 rounded-sm cursor-pointer transition-all duration-150
-                          ${isCurrentYear ? getBoxStyles(jobCount, isPast, isToday) : "bg-transparent"}
-                          ${isCurrentYear && jobCount > 0 && !isToday ? "hover:ring-1 hover:ring-[var(--nox-accent)] hover:opacity-100" : ""}
-                          ${isCurrentYear && !isPast && !isToday ? "hover:scale-110" : ""}
-                        `}
-                        onMouseEnter={(e) => handleMouseEnter(day, e)}
-                        onMouseLeave={() => setHoveredDay(null)}
-                        onClick={() => isCurrentYear && handleDayClick(day)}
+                        className="flex-1 aspect-square min-h-[14px] rounded-sm bg-transparent"
                       />
                     );
-                  })}
-                </div>
-              ))}
-            </div>
+                  }
+
+                  const isToday = isSameDay(day.date, today);
+                  const isPast = isBefore(day.date, today) && !isToday;
+                  const jobCount = day.jobs.length;
+
+                  return (
+                    <div
+                      key={dayIndex}
+                      className={`
+                        flex-1 aspect-square min-h-[14px] rounded-sm cursor-pointer transition-all duration-150
+                        ${getBoxStyles(jobCount, isPast, isToday)}
+                        ${jobCount > 0 && !isToday ? "hover:ring-1 hover:ring-[var(--nox-accent)] hover:opacity-100" : ""}
+                        ${!isPast && !isToday ? "hover:scale-110" : ""}
+                      `}
+                      onMouseEnter={(e) => handleMouseEnter(day, e)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      onClick={() => handleDayClick(day)}
+                    />
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Tooltip */}
-        {hoveredDay && hoveredDay.date.getFullYear() === year && (
+        {hoveredDay && (
           <div
             className="fixed z-50 pointer-events-none"
             style={{
