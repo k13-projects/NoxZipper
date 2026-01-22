@@ -36,6 +36,7 @@ const statusColors: Record<string, string> = {
   SCHEDULED: "#52525b", // zinc-600
   COMPLETED: "#22c55e", // green-500
   INVOICED: "#3b82f6", // blue-500
+  PAID: "#10b981", // emerald-500
   CANCELLED: "#ef4444", // red-500
 };
 
@@ -110,6 +111,10 @@ export default function CalendarPage() {
             <span className="text-sm">Invoiced</span>
           </div>
           <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded bg-emerald-500"></div>
+            <span className="text-sm">Paid</span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-red-500"></div>
             <span className="text-sm">Cancelled</span>
           </div>
@@ -147,7 +152,7 @@ export default function CalendarPage() {
         </Card>
 
         {/* Stats for current view */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-5">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-zinc-400">Total Jobs</CardTitle>
@@ -183,6 +188,16 @@ export default function CalendarPage() {
             <CardContent>
               <div className="text-2xl font-bold text-blue-500">
                 {events.filter((e) => e.extendedProps.status === "INVOICED").length}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-zinc-400">Paid</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-emerald-500">
+                {events.filter((e) => e.extendedProps.status === "PAID").length}
               </div>
             </CardContent>
           </Card>

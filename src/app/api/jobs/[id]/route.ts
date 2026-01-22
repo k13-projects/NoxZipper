@@ -51,11 +51,19 @@ export async function PUT(
     }
     if (data.status !== undefined) {
       updateData.status = data.status;
-      // Set completedAt when status changes to COMPLETED
+      // Set timestamps based on status changes
       if (data.status === "COMPLETED") {
         updateData.completedAt = new Date();
       } else if (data.status === "SCHEDULED") {
         updateData.completedAt = null;
+        updateData.invoiceSentAt = null;
+        updateData.paidAt = null;
+      } else if (data.status === "INVOICED") {
+        if (!data.skipInvoiceTimestamp) {
+          updateData.invoiceSentAt = new Date();
+        }
+      } else if (data.status === "PAID") {
+        updateData.paidAt = new Date();
       }
     }
     if (data.price !== undefined) {
@@ -77,6 +85,22 @@ export async function PUT(
     }
     if (data.notes !== undefined) {
       updateData.notes = data.notes;
+    }
+    // Invoicing fields
+    if (data.invoiceNumber !== undefined) {
+      updateData.invoiceNumber = data.invoiceNumber;
+    }
+    if (data.invoiceSentAt !== undefined) {
+      updateData.invoiceSentAt = data.invoiceSentAt ? new Date(data.invoiceSentAt) : null;
+    }
+    if (data.paidAt !== undefined) {
+      updateData.paidAt = data.paidAt ? new Date(data.paidAt) : null;
+    }
+    if (data.paymentMethod !== undefined) {
+      updateData.paymentMethod = data.paymentMethod;
+    }
+    if (data.amountPaid !== undefined) {
+      updateData.amountPaid = data.amountPaid;
     }
 
     const job = await prisma.job.update({

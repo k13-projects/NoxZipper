@@ -11,9 +11,20 @@ export const JobStatus = {
   SCHEDULED: "SCHEDULED",
   COMPLETED: "COMPLETED",
   INVOICED: "INVOICED",
+  PAID: "PAID",
   CANCELLED: "CANCELLED",
 } as const;
 export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus];
+
+export const PaymentMethod = {
+  CASH: "CASH",
+  CHECK: "CHECK",
+  ZELLE: "ZELLE",
+  ACH: "ACH",
+  CARD: "CARD",
+  OTHER: "OTHER",
+} as const;
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
 
 export const AttachmentType = {
   BEFORE_PHOTO: "BEFORE_PHOTO",
@@ -29,6 +40,7 @@ export const JobStatusColors: Record<JobStatus, string> = {
   SCHEDULED: "#6b7280", // gray
   COMPLETED: "#22c55e", // green
   INVOICED: "#3b82f6", // blue
+  PAID: "#10b981", // emerald
   CANCELLED: "#ef4444", // red
 };
 

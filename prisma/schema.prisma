@@ -52,7 +52,7 @@ model Job {
   customerId    String
   customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   scheduledDate DateTime
-  status        String    @default("SCHEDULED") // SCHEDULED, COMPLETED, INVOICED, CANCELLED
+  status        String    @default("SCHEDULED") // SCHEDULED, COMPLETED, INVOICED, PAID, CANCELLED
   price         Float     @default(500)
   operatorShare Float     @default(400) // 80% of price
   adminShare    Float     @default(50)  // 10% of price
@@ -62,6 +62,14 @@ model Job {
   adminName     String    @default("Kazim")
   completedAt   DateTime?
   notes         String?
+
+  // Invoicing & Collections fields
+  invoiceNumber   String?   // Invoice reference number
+  invoiceSentAt   DateTime? // When invoice was sent
+  paidAt          DateTime? // When payment was received
+  paymentMethod   String?   // CASH, CHECK, ZELLE, ACH, CARD, OTHER
+  amountPaid      Float?    // Actual amount received
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

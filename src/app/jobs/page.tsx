@@ -89,10 +89,11 @@ export default function JobsPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "scheduled" | "completed" | "invoiced" | "cancelled"> = {
+    const variants: Record<string, "scheduled" | "completed" | "invoiced" | "paid" | "cancelled"> = {
       SCHEDULED: "scheduled",
       COMPLETED: "completed",
       INVOICED: "invoiced",
+      PAID: "paid",
       CANCELLED: "cancelled",
     };
     return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
@@ -149,6 +150,7 @@ export default function JobsPage() {
                     <option value="SCHEDULED">Scheduled</option>
                     <option value="COMPLETED">Completed</option>
                     <option value="INVOICED">Invoiced</option>
+                    <option value="PAID">Paid</option>
                     <option value="CANCELLED">Cancelled</option>
                   </Select>
                 </div>

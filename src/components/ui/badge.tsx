@@ -16,6 +16,7 @@ const badgeVariants = cva(
         scheduled: "border-transparent bg-zinc-600 text-white",
         completed: "border-transparent bg-green-600 text-white",
         invoiced: "border-transparent bg-blue-600 text-white",
+        paid: "border-transparent bg-emerald-600 text-white",
         cancelled: "border-transparent bg-red-600 text-white",
       },
     },

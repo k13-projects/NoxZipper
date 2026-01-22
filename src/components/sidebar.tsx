@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  Receipt,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/jobs", label: "Jobs", icon: Briefcase },
+  { href: "/collections", label: "Collections", icon: Receipt },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/calculator", label: "Calculator", icon: Calculator },
 ];
