@@ -21,9 +21,9 @@ const monthMap: Record<string, number> = {
 
 export async function GET() {
   try {
-    // Get the latest created branch (sorted by creation date, newest first)
+    // Get the latest merged branch from main's merge commits
     const { stdout } = await execAsync(
-      "git for-each-ref --sort=-creatordate --format='%(refname:short)' refs/heads/ | head -1"
+      "git log main --oneline --merges -1 --format='%s' | grep -oE 'Nox_[A-Za-z]+[0-9]+_v[0-9]+' || git branch --show-current"
     );
     const branchName = stdout.trim();
 
