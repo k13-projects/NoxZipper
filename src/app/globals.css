@@ -23,25 +23,25 @@
   --nox-border-default: #32323a;
   --nox-border-strong: #45454f;
 
-  /* Accent - Soft Mint/Teal */
-  --nox-accent: #7DD3C0;
-  --nox-accent-hover: #6BC4B0;
-  --nox-accent-muted: rgba(125, 211, 192, 0.18);
-  --nox-accent-subtle: rgba(125, 211, 192, 0.10);
+  /* Accent - Soft Teal Green (muted, not neony) */
+  --nox-accent: #6EB5A6;
+  --nox-accent-hover: #5EA596;
+  --nox-accent-muted: rgba(110, 181, 166, 0.18);
+  --nox-accent-subtle: rgba(110, 181, 166, 0.10);
 
-  /* Pastel Status Colors */
-  --nox-status-scheduled: #8B8FA3;
-  --nox-status-completed: #81C995;
-  --nox-status-invoiced: #A8D8EA;
-  --nox-status-paid: #81C995;
-  --nox-status-overdue: #F8AFA6;
-  --nox-status-cancelled: #E0A8A8;
+  /* Pastel Status Colors - Soft & Muted */
+  --nox-status-scheduled: #8E92A4;
+  --nox-status-completed: #7AB38D;
+  --nox-status-invoiced: #9AC5D4;
+  --nox-status-paid: #7AB38D;
+  --nox-status-overdue: #D9A8A0;
+  --nox-status-cancelled: #C9A5A5;
 
-  /* Semantic Colors - Soft Pastels */
-  --nox-success: #81C995;
-  --nox-warning: #FFEAA7;
-  --nox-error: #F8AFA6;
-  --nox-info: #A8D8EA;
+  /* Semantic Colors - Muted Pastels */
+  --nox-success: #7AB38D;
+  --nox-warning: #E8D9A0;
+  --nox-error: #D9A8A0;
+  --nox-info: #9AC5D4;
 
   /* Legacy compatibility */
   --background: var(--nox-bg-base);
@@ -217,8 +217,8 @@ body {
 }
 
 @keyframes pulse-accent {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(125, 211, 192, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(125, 211, 192, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(110, 181, 166, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(110, 181, 166, 0); }
 }
 
 @keyframes shine {
@@ -329,12 +329,12 @@ body {
    ============================================ */
 
 .table-row-overdue {
-  background: rgba(248, 175, 166, 0.08) !important;
+  background: rgba(217, 168, 160, 0.08) !important;
   border-left: 3px solid var(--nox-status-overdue);
 }
 
 .table-row-overdue:hover {
-  background: rgba(248, 175, 166, 0.12) !important;
+  background: rgba(217, 168, 160, 0.12) !important;
 }
 
 /* ============================================

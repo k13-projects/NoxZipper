@@ -32,13 +32,13 @@ interface CalendarEvent {
   };
 }
 
-// Pastel color scheme: soft & bright
+// Pastel color scheme: soft & muted teal-green
 const statusColors: Record<string, string> = {
-  SCHEDULED: "#8B8FA3",
-  COMPLETED: "#81C995",
-  INVOICED: "#A8D8EA",
-  PAID: "#81C995",
-  CANCELLED: "#F8AFA6",
+  SCHEDULED: "#8E92A4",
+  COMPLETED: "#7AB38D",
+  INVOICED: "#9AC5D4",
+  PAID: "#7AB38D",
+  CANCELLED: "#D9A8A0",
 };
 
 export default function CalendarPage() {
@@ -91,22 +91,22 @@ export default function CalendarPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Legend - Pastel */}
+        {/* Legend - Soft Pastel */}
         <div className="flex flex-wrap gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: "#8B8FA3" }}></div>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#8E92A4" }}></div>
             <span className="text-sm text-[var(--nox-text-secondary)]">Scheduled</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: "#81C995" }}></div>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#7AB38D" }}></div>
             <span className="text-sm text-[var(--nox-text-secondary)]">Completed / Paid</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: "#A8D8EA" }}></div>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#9AC5D4" }}></div>
             <span className="text-sm text-[var(--nox-text-secondary)]">Invoiced</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ background: "#F8AFA6" }}></div>
+            <div className="w-3 h-3 rounded-full" style={{ background: "#D9A8A0" }}></div>
             <span className="text-sm text-[var(--nox-text-secondary)]">Cancelled</span>
           </div>
         </div>
