@@ -74,7 +74,7 @@ export function Sidebar() {
             <Link href="/" className="block w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/noxzipper-logo.png"
+                src="/noxzipper-logo-bg.png"
                 alt="NOXZIPPER"
                 className="w-full h-auto object-contain"
               />
