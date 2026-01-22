@@ -32,12 +32,13 @@ interface CalendarEvent {
   };
 }
 
+// Minimal color scheme: gray for pending, green for positive, red for negative
 const statusColors: Record<string, string> = {
-  SCHEDULED: "#52525b", // zinc-600
-  COMPLETED: "#22c55e", // green-500
-  INVOICED: "#3b82f6", // blue-500
-  PAID: "#10b981", // emerald-500
-  CANCELLED: "#ef4444", // red-500
+  SCHEDULED: "#6b7075",
+  COMPLETED: "#00c805",
+  INVOICED: "#00c805",
+  PAID: "#00c805",
+  CANCELLED: "#ff5000",
 };
 
 export default function CalendarPage() {
@@ -90,27 +91,19 @@ export default function CalendarPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Legend */}
-        <div className="flex flex-wrap gap-4">
+        {/* Legend - Minimal */}
+        <div className="flex flex-wrap gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-zinc-600"></div>
-            <span className="text-sm">Scheduled</span>
+            <div className="w-3 h-3 rounded-full bg-[var(--nox-text-muted)]"></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Scheduled</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-500"></div>
-            <span className="text-sm">Completed</span>
+            <div className="w-3 h-3 rounded-full bg-[var(--nox-accent)]"></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Completed / Invoiced / Paid</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-500"></div>
-            <span className="text-sm">Invoiced</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-emerald-500"></div>
-            <span className="text-sm">Paid</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-red-500"></div>
-            <span className="text-sm">Cancelled</span>
+            <div className="w-3 h-3 rounded-full bg-[var(--nox-error)]"></div>
+            <span className="text-sm text-[var(--nox-text-secondary)]">Cancelled</span>
           </div>
         </div>
 
@@ -149,7 +142,7 @@ export default function CalendarPage() {
         <div className="grid gap-4 sm:grid-cols-5">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Total Jobs</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Total Jobs</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{events.length}</div>
@@ -157,40 +150,40 @@ export default function CalendarPage() {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Scheduled</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Scheduled</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-zinc-400">
+              <div className="text-2xl font-bold text-[var(--nox-text-secondary)]">
                 {events.filter((e) => e.extendedProps.status === "SCHEDULED").length}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Completed</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Completed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-500">
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
                 {events.filter((e) => e.extendedProps.status === "COMPLETED").length}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Invoiced</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Invoiced</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-500">
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
                 {events.filter((e) => e.extendedProps.status === "INVOICED").length}
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm text-zinc-400">Paid</CardTitle>
+              <CardTitle className="text-sm text-[var(--nox-text-muted)]">Paid</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-500">
+              <div className="text-2xl font-bold text-[var(--nox-accent)]">
                 {events.filter((e) => e.extendedProps.status === "PAID").length}
               </div>
             </CardContent>

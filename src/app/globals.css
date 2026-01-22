@@ -1,46 +1,47 @@
 @import "tailwindcss";
 
 /* ============================================
-   NOXZIPPER Industrial Design System
+   NOXZIPPER Minimal Design System
+   Inspired by Robinhood - Clean & Readable
    ============================================ */
 
 :root {
-  /* Background Colors - Near Black / Charcoal */
-  --nox-bg-base: #0c0c0e;
-  --nox-bg-elevated: #131316;
-  --nox-bg-surface: #1a1a1f;
-  --nox-bg-hover: #222228;
+  /* Background Colors - True Black */
+  --nox-bg-base: #000000;
+  --nox-bg-elevated: #0a0a0a;
+  --nox-bg-surface: #121212;
+  --nox-bg-hover: #1a1a1a;
 
-  /* Text Colors */
-  --nox-text-primary: #f0f0f2;
-  --nox-text-secondary: #9ca3af;
-  --nox-text-muted: #6b7280;
-  --nox-text-disabled: #4b5563;
+  /* Text Colors - High Contrast */
+  --nox-text-primary: #ffffff;
+  --nox-text-secondary: #9da0a5;
+  --nox-text-muted: #6b7075;
+  --nox-text-disabled: #404040;
 
-  /* Border Colors */
-  --nox-border-subtle: #27272a;
-  --nox-border-default: #3f3f46;
-  --nox-border-strong: #52525b;
+  /* Border Colors - Subtle */
+  --nox-border-subtle: #1f1f1f;
+  --nox-border-default: #2a2a2a;
+  --nox-border-strong: #3a3a3a;
 
-  /* Accent - Safety Orange */
-  --nox-accent: #f97316;
-  --nox-accent-hover: #ea580c;
-  --nox-accent-muted: rgba(249, 115, 22, 0.15);
-  --nox-accent-subtle: rgba(249, 115, 22, 0.08);
+  /* Accent - Robinhood Green */
+  --nox-accent: #00c805;
+  --nox-accent-hover: #00a804;
+  --nox-accent-muted: rgba(0, 200, 5, 0.15);
+  --nox-accent-subtle: rgba(0, 200, 5, 0.08);
 
-  /* Status Colors */
-  --nox-status-scheduled: #6b7280;
-  --nox-status-completed: #22c55e;
-  --nox-status-invoiced: #3b82f6;
-  --nox-status-paid: #14b8a6;
-  --nox-status-overdue: #ef4444;
-  --nox-status-cancelled: #ef4444;
+  /* Minimal Status Colors - Just Green, Red, Gray */
+  --nox-status-scheduled: #6b7075;
+  --nox-status-completed: #00c805;
+  --nox-status-invoiced: #00c805;
+  --nox-status-paid: #00c805;
+  --nox-status-overdue: #ff5000;
+  --nox-status-cancelled: #ff5000;
 
-  /* Semantic Colors */
-  --nox-success: #22c55e;
-  --nox-warning: #f59e0b;
-  --nox-error: #ef4444;
-  --nox-info: #3b82f6;
+  /* Semantic Colors - Minimal */
+  --nox-success: #00c805;
+  --nox-warning: #ffb800;
+  --nox-error: #ff5000;
+  --nox-info: #9da0a5;
 
   /* Legacy compatibility */
   --background: var(--nox-bg-base);
@@ -48,13 +49,13 @@
   --card: var(--nox-bg-surface);
   --card-foreground: var(--nox-text-primary);
   --primary: var(--nox-accent);
-  --primary-foreground: #ffffff;
+  --primary-foreground: #000000;
   --secondary: var(--nox-bg-elevated);
   --secondary-foreground: var(--nox-text-primary);
   --muted: var(--nox-bg-elevated);
   --muted-foreground: var(--nox-text-secondary);
   --accent: var(--nox-accent);
-  --accent-foreground: #ffffff;
+  --accent-foreground: #000000;
   --destructive: var(--nox-error);
   --destructive-foreground: #ffffff;
   --border: var(--nox-border-default);
@@ -215,9 +216,9 @@ body {
   to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes pulse-orange {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
-  50% { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
+@keyframes pulse-accent {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 200, 5, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(0, 200, 5, 0); }
 }
 
 @keyframes shine {
@@ -253,8 +254,8 @@ body {
   animation: slideIn 0.2s ease-out;
 }
 
-.animate-pulse-orange {
-  animation: pulse-orange 2s infinite;
+.animate-pulse-accent {
+  animation: pulse-accent 2s infinite;
 }
 
 /* ============================================

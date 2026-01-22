@@ -113,7 +113,7 @@ export default function JobsPage() {
             <Filter className="mr-2 h-4 w-4" />
             Filters
             {hasActiveFilters && (
-              <span className="ml-2 rounded-full bg-orange-600 px-2 py-0.5 text-xs">
+              <span className="ml-2 rounded-full bg-[var(--nox-accent)] text-black px-2 py-0.5 text-xs">
                 Active
               </span>
             )}
@@ -217,7 +217,7 @@ export default function JobsPage() {
                       <TableCell>
                         <Link
                           href={`/customers/${job.customer.id}`}
-                          className="font-medium hover:text-orange-500"
+                          className="font-medium hover:text-[var(--nox-accent)]"
                         >
                           {job.customer.name}
                         </Link>

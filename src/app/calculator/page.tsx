@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils";
-import { Calculator, DollarSign, Users, TrendingUp } from "lucide-react";
+import { Calculator, TrendingUp } from "lucide-react";
 
 export default function CalculatorPage() {
   // Single job calculator
@@ -39,7 +39,7 @@ export default function CalculatorPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-orange-500" />
+                <Calculator className="h-5 w-5 text-[var(--nox-text-muted)]" />
                 Single Job Calculator
               </CardTitle>
               <CardDescription>
@@ -60,56 +60,41 @@ export default function CalculatorPage() {
                 />
               </div>
 
-              <div className="p-6 bg-zinc-800 rounded-lg space-y-4">
-                <div className="text-center pb-4 border-b border-zinc-700">
-                  <div className="text-sm text-zinc-400">Total Job Price</div>
-                  <div className="text-4xl font-bold text-green-500">
+              <div className="p-6 bg-[var(--nox-bg-elevated)] rounded-lg space-y-4">
+                <div className="text-center pb-4 border-b border-[var(--nox-border-subtle)]">
+                  <div className="text-sm text-[var(--nox-text-muted)]">Total Job Price</div>
+                  <div className="text-4xl font-bold text-[var(--nox-accent)]">
                     {formatCurrency(jobPrice)}
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-orange-500/20 rounded">
-                        <DollarSign className="h-4 w-4 text-orange-500" />
-                      </div>
-                      <div>
-                        <span className="font-medium">Operator (Baha)</span>
-                        <span className="text-xs text-zinc-500 ml-2">80%</span>
-                      </div>
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
+                    <div>
+                      <span className="font-medium">Operator (Baha)</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">80%</span>
                     </div>
-                    <span className="text-xl font-bold text-orange-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(operatorShare)}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-cyan-500/20 rounded">
-                        <DollarSign className="h-4 w-4 text-cyan-500" />
-                      </div>
-                      <div>
-                        <span className="font-medium">Admin (Kazim)</span>
-                        <span className="text-xs text-zinc-500 ml-2">10%</span>
-                      </div>
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
+                    <div>
+                      <span className="font-medium">Admin (Kazim)</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                     </div>
-                    <span className="text-xl font-bold text-cyan-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(adminShare)}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-pink-500/20 rounded">
-                        <DollarSign className="h-4 w-4 text-pink-500" />
-                      </div>
-                      <div>
-                        <span className="font-medium">Sales (Eren)</span>
-                        <span className="text-xs text-zinc-500 ml-2">10%</span>
-                      </div>
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
+                    <div>
+                      <span className="font-medium">Sales (Eren)</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                     </div>
-                    <span className="text-xl font-bold text-pink-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(salesShare)}
                     </span>
                   </div>
@@ -122,7 +107,7 @@ export default function CalculatorPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-500" />
+                <TrendingUp className="h-5 w-5 text-[var(--nox-text-muted)]" />
                 Annual Projection Calculator
               </CardTitle>
               <CardDescription>
@@ -165,22 +150,22 @@ export default function CalculatorPage() {
                 </div>
               </div>
 
-              <div className="p-6 bg-zinc-800 rounded-lg space-y-6">
+              <div className="p-6 bg-[var(--nox-bg-elevated)] rounded-lg space-y-6">
                 {/* Summary Stats */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="p-4 bg-zinc-700/50 rounded-lg text-center">
-                    <div className="text-sm text-zinc-400">Total Annual Jobs</div>
+                  <div className="p-4 bg-[var(--nox-bg-hover)] rounded-lg text-center">
+                    <div className="text-sm text-[var(--nox-text-muted)]">Total Annual Jobs</div>
                     <div className="text-3xl font-bold">{totalAnnualJobs}</div>
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-[var(--nox-text-muted)]">
                       {numCustomers} customers × {jobsPerYear} jobs/year
                     </div>
                   </div>
-                  <div className="p-4 bg-zinc-700/50 rounded-lg text-center">
-                    <div className="text-sm text-zinc-400">Total Annual Revenue</div>
-                    <div className="text-3xl font-bold text-green-500">
+                  <div className="p-4 bg-[var(--nox-bg-hover)] rounded-lg text-center">
+                    <div className="text-sm text-[var(--nox-text-muted)]">Total Annual Revenue</div>
+                    <div className="text-3xl font-bold text-[var(--nox-accent)]">
                       {formatCurrency(totalAnnualRevenue)}
                     </div>
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-[var(--nox-text-muted)]">
                       {totalAnnualJobs} jobs × {formatCurrency(avgTicket)}/job
                     </div>
                   </div>
@@ -188,51 +173,51 @@ export default function CalculatorPage() {
 
                 {/* Annual Splits */}
                 <div className="space-y-3">
-                  <h4 className="font-medium text-zinc-300">Annual Split Breakdown</h4>
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
+                  <h4 className="font-medium text-[var(--nox-text-secondary)]">Annual Split Breakdown</h4>
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
                     <div>
                       <span className="font-medium">Operator (Baha)</span>
-                      <span className="text-xs text-zinc-500 ml-2">80%</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">80%</span>
                     </div>
-                    <span className="text-xl font-bold text-orange-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(annualOperator)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
                     <div>
                       <span className="font-medium">Admin (Kazim)</span>
-                      <span className="text-xs text-zinc-500 ml-2">10%</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                     </div>
-                    <span className="text-xl font-bold text-cyan-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(annualAdmin)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-zinc-700/50 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-[var(--nox-bg-hover)] rounded-lg">
                     <div>
                       <span className="font-medium">Sales (Eren)</span>
-                      <span className="text-xs text-zinc-500 ml-2">10%</span>
+                      <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                     </div>
-                    <span className="text-xl font-bold text-pink-500">
+                    <span className="text-xl font-bold">
                       {formatCurrency(annualSales)}
                     </span>
                   </div>
                 </div>
 
                 {/* Monthly Breakdown */}
-                <div className="pt-4 border-t border-zinc-700">
-                  <h4 className="font-medium text-zinc-300 mb-3">Monthly Averages</h4>
+                <div className="pt-4 border-t border-[var(--nox-border-subtle)]">
+                  <h4 className="font-medium text-[var(--nox-text-secondary)] mb-3">Monthly Averages</h4>
                   <div className="grid gap-2 sm:grid-cols-3 text-center">
-                    <div className="p-2 bg-zinc-700/30 rounded">
-                      <div className="text-xs text-zinc-500">Jobs/Month</div>
+                    <div className="p-2 bg-[var(--nox-bg-hover)] rounded">
+                      <div className="text-xs text-[var(--nox-text-muted)]">Jobs/Month</div>
                       <div className="font-bold">{(totalAnnualJobs / 12).toFixed(1)}</div>
                     </div>
-                    <div className="p-2 bg-zinc-700/30 rounded">
-                      <div className="text-xs text-zinc-500">Revenue/Month</div>
+                    <div className="p-2 bg-[var(--nox-bg-hover)] rounded">
+                      <div className="text-xs text-[var(--nox-text-muted)]">Revenue/Month</div>
                       <div className="font-bold">{formatCurrency(totalAnnualRevenue / 12)}</div>
                     </div>
-                    <div className="p-2 bg-zinc-700/30 rounded">
-                      <div className="text-xs text-zinc-500">Operator/Month</div>
-                      <div className="font-bold text-orange-500">
+                    <div className="p-2 bg-[var(--nox-bg-hover)] rounded">
+                      <div className="text-xs text-[var(--nox-text-muted)]">Operator/Month</div>
+                      <div className="font-bold">
                         {formatCurrency(annualOperator / 12)}
                       </div>
                     </div>
@@ -250,30 +235,27 @@ export default function CalculatorPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="p-4 border border-orange-500/30 bg-orange-500/5 rounded-lg">
+              <div className="p-4 border border-[var(--nox-border-default)] bg-[var(--nox-bg-elevated)] rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-orange-500" />
-                  <span className="font-bold text-orange-500">Operator (80%)</span>
+                  <span className="font-bold text-[var(--nox-text-primary)]">Operator (80%)</span>
                 </div>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-[var(--nox-text-muted)]">
                   Baha - handles labor, chemicals, and all operational expenses from this share.
                 </p>
               </div>
-              <div className="p-4 border border-cyan-500/30 bg-cyan-500/5 rounded-lg">
+              <div className="p-4 border border-[var(--nox-border-default)] bg-[var(--nox-bg-elevated)] rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-cyan-500" />
-                  <span className="font-bold text-cyan-500">Admin (10%)</span>
+                  <span className="font-bold text-[var(--nox-text-primary)]">Admin (10%)</span>
                 </div>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-[var(--nox-text-muted)]">
                   Kazim - platform management, coordination, and administrative overhead.
                 </p>
               </div>
-              <div className="p-4 border border-pink-500/30 bg-pink-500/5 rounded-lg">
+              <div className="p-4 border border-[var(--nox-border-default)] bg-[var(--nox-bg-elevated)] rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-pink-500" />
-                  <span className="font-bold text-pink-500">Sales (10%)</span>
+                  <span className="font-bold text-[var(--nox-text-primary)]">Sales (10%)</span>
                 </div>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-[var(--nox-text-muted)]">
                   Eren - customer acquisition, relationship management, and sales efforts.
                 </p>
               </div>

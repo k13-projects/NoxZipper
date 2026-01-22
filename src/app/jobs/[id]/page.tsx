@@ -401,7 +401,7 @@ NOXZIPPER Team`;
               </div>
               <Link
                 href={`/customers/${job.customer.id}`}
-                className="text-zinc-400 hover:text-orange-500"
+                className="text-[var(--nox-text-secondary)] hover:text-[var(--nox-accent)]"
               >
                 {job.customer.name}
               </Link>
@@ -448,7 +448,7 @@ NOXZIPPER Team`;
               <div>
                 <Link
                   href={`/customers/${job.customer.id}`}
-                  className="font-medium text-lg hover:text-orange-500"
+                  className="font-medium text-lg hover:text-[var(--nox-accent)]"
                 >
                   {job.customer.name}
                 </Link>
@@ -463,10 +463,10 @@ NOXZIPPER Team`;
                 </div>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4 text-zinc-400" />
+                <Phone className="h-4 w-4 text-[var(--nox-text-muted)]" />
                 <a
                   href={`tel:${job.customer.contactPhone}`}
-                  className="hover:text-orange-500"
+                  className="hover:text-[var(--nox-accent)]"
                 >
                   {job.customer.contactPhone}
                 </a>
@@ -530,37 +530,37 @@ NOXZIPPER Team`;
               <CardTitle>Revenue Split (80/10/10)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-zinc-800 rounded-lg">
-                <div className="text-sm text-zinc-400">Total Price</div>
-                <div className="text-2xl font-bold text-green-500">
+              <div className="p-4 bg-[var(--nox-bg-hover)] rounded-lg">
+                <div className="text-sm text-[var(--nox-text-muted)]">Total Price</div>
+                <div className="text-2xl font-bold text-[var(--nox-accent)]">
                   {formatCurrency(editPrice)}
                 </div>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-zinc-400">Operator ({job.operatorName})</span>
-                    <span className="text-xs text-zinc-500 ml-2">80%</span>
+                    <span className="text-[var(--nox-text-secondary)]">Operator ({job.operatorName})</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] ml-2">80%</span>
                   </div>
-                  <span className="font-medium text-orange-500">
+                  <span className="font-medium">
                     {formatCurrency(shares.operator)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-zinc-400">Admin ({job.adminName})</span>
-                    <span className="text-xs text-zinc-500 ml-2">10%</span>
+                    <span className="text-[var(--nox-text-secondary)]">Admin ({job.adminName})</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                   </div>
-                  <span className="font-medium text-cyan-500">
+                  <span className="font-medium">
                     {formatCurrency(shares.admin)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <div>
-                    <span className="text-zinc-400">Sales ({job.salesName})</span>
-                    <span className="text-xs text-zinc-500 ml-2">10%</span>
+                    <span className="text-[var(--nox-text-secondary)]">Sales ({job.salesName})</span>
+                    <span className="text-xs text-[var(--nox-text-muted)] ml-2">10%</span>
                   </div>
-                  <span className="font-medium text-pink-500">
+                  <span className="font-medium">
                     {formatCurrency(shares.sales)}
                   </span>
                 </div>
@@ -578,7 +578,7 @@ NOXZIPPER Team`;
             <div className="grid gap-6 md:grid-cols-2">
               {/* Invoice Info */}
               <div className="space-y-4">
-                <h4 className="font-medium text-zinc-300">Invoice Details</h4>
+                <h4 className="font-medium text-[var(--nox-text-primary)]">Invoice Details</h4>
                 <div className="space-y-2">
                   <Label>Invoice Number</Label>
                   <Input
@@ -607,7 +607,7 @@ NOXZIPPER Team`;
 
               {/* Payment Info */}
               <div className="space-y-4">
-                <h4 className="font-medium text-zinc-300">Payment Details</h4>
+                <h4 className="font-medium text-[var(--nox-text-primary)]">Payment Details</h4>
                 <div className="space-y-2">
                   <Label>Payment Method</Label>
                   <Select
@@ -632,7 +632,7 @@ NOXZIPPER Team`;
                   />
                 </div>
                 {job.paidAt && (
-                  <p className="text-sm text-green-500">
+                  <p className="text-sm text-[var(--nox-accent)]">
                     Paid: {formatDateTime(job.paidAt)} via {job.paymentMethod}
                   </p>
                 )}
@@ -659,7 +659,7 @@ NOXZIPPER Team`;
           </CardHeader>
           <CardContent>
             {/* Upload Section */}
-            <div className="mb-6 p-4 border border-dashed border-zinc-700 rounded-lg">
+            <div className="mb-6 p-4 border border-dashed border-[var(--nox-border-default)] rounded-lg">
               <div className="flex flex-wrap gap-4 items-center">
                 <Select
                   value={uploadType}
@@ -681,7 +681,7 @@ NOXZIPPER Team`;
                     onChange={handleFileUpload}
                     disabled={uploading}
                   />
-                  <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-400 disabled:pointer-events-none disabled:opacity-50 border border-zinc-700 bg-transparent text-zinc-100 shadow-sm hover:bg-zinc-800 h-9 px-4 py-2">
+                  <span className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--nox-accent)] disabled:pointer-events-none disabled:opacity-50 border border-[var(--nox-border-default)] bg-transparent text-[var(--nox-text-primary)] shadow-sm hover:bg-[var(--nox-bg-hover)] h-9 px-4 py-2">
                     {uploading ? (
                       <Spinner size="sm" className="mr-2" />
                     ) : (
@@ -705,9 +705,9 @@ NOXZIPPER Team`;
                   return (
                     <div
                       key={attachment.id}
-                      className="flex items-center gap-3 p-3 bg-zinc-800 rounded-lg"
+                      className="flex items-center gap-3 p-3 bg-[var(--nox-bg-hover)] rounded-lg"
                     >
-                      <div className="p-2 bg-zinc-700 rounded">
+                      <div className="p-2 bg-[var(--nox-bg-surface)] rounded">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -721,7 +721,7 @@ NOXZIPPER Team`;
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-zinc-400 hover:text-red-500"
+                        className="text-[var(--nox-text-muted)] hover:text-[var(--nox-error)]"
                         onClick={() => handleDeleteAttachment(attachment.id)}
                       >
                         <X className="h-4 w-4" />

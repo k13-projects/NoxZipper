@@ -7,19 +7,19 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[var(--nox-accent)] text-white",
+        default: "bg-[var(--nox-accent)] text-black",
         secondary: "bg-[var(--nox-bg-hover)] text-[var(--nox-text-primary)] border border-[var(--nox-border-default)]",
         destructive: "bg-[var(--nox-error)] text-white",
-        success: "bg-[var(--nox-success)] text-white",
+        success: "bg-[var(--nox-success)] text-black",
         warning: "bg-[var(--nox-warning)] text-black",
         outline: "border border-[var(--nox-border-default)] text-[var(--nox-text-secondary)]",
-        // Status variants
-        scheduled: "bg-[var(--nox-status-scheduled)]/20 text-[var(--nox-text-secondary)] border border-[var(--nox-status-scheduled)]/30",
-        completed: "bg-[var(--nox-status-completed)]/15 text-[var(--nox-status-completed)] border border-[var(--nox-status-completed)]/30",
-        invoiced: "bg-[var(--nox-status-invoiced)]/15 text-[var(--nox-status-invoiced)] border border-[var(--nox-status-invoiced)]/30",
-        paid: "bg-[var(--nox-status-paid)]/15 text-[var(--nox-status-paid)] border border-[var(--nox-status-paid)]/30",
-        overdue: "bg-[var(--nox-status-overdue)]/15 text-[var(--nox-status-overdue)] border border-[var(--nox-status-overdue)]/30",
-        cancelled: "bg-[var(--nox-status-cancelled)]/15 text-[var(--nox-status-cancelled)] border border-[var(--nox-status-cancelled)]/30",
+        // Minimal status variants - gray for pending, green for positive, red for negative
+        scheduled: "bg-[var(--nox-bg-hover)] text-[var(--nox-text-secondary)] border border-[var(--nox-border-default)]",
+        completed: "bg-[var(--nox-accent)]/15 text-[var(--nox-accent)] border border-[var(--nox-accent)]/30",
+        invoiced: "bg-[var(--nox-accent)]/15 text-[var(--nox-accent)] border border-[var(--nox-accent)]/30",
+        paid: "bg-[var(--nox-accent)]/15 text-[var(--nox-accent)] border border-[var(--nox-accent)]/30",
+        overdue: "bg-[var(--nox-error)]/15 text-[var(--nox-error)] border border-[var(--nox-error)]/30",
+        cancelled: "bg-[var(--nox-error)]/15 text-[var(--nox-error)] border border-[var(--nox-error)]/30",
       },
     },
     defaultVariants: {

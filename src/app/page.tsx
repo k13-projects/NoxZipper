@@ -12,9 +12,6 @@ import {
   Calendar,
   AlertTriangle,
   DollarSign,
-  Wrench,
-  User,
-  TrendingUp,
   Receipt,
   CheckCircle,
   RefreshCw,
@@ -134,8 +131,8 @@ export default function DashboardPage() {
                     {stats?.totalCustomers || 0}
                   </p>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">
-                  <Users className="h-6 w-6 text-blue-500" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-bg-hover)]">
+                  <Users className="h-6 w-6 text-[var(--nox-text-muted)]" />
                 </div>
               </div>
             </CardContent>
@@ -150,8 +147,8 @@ export default function DashboardPage() {
                     {stats?.totalJobsThisYear || 0}
                   </p>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10">
-                  <Briefcase className="h-6 w-6 text-purple-500" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-bg-hover)]">
+                  <Briefcase className="h-6 w-6 text-[var(--nox-text-muted)]" />
                 </div>
               </div>
             </CardContent>
@@ -162,12 +159,12 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-label mb-1">Upcoming (30d)</p>
-                  <p className="text-3xl font-bold text-[var(--nox-status-completed)]">
+                  <p className="text-3xl font-bold text-[var(--nox-accent)]">
                     {stats?.upcomingJobs || 0}
                   </p>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-status-completed)]/10">
-                  <Calendar className="h-6 w-6 text-[var(--nox-status-completed)]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--nox-accent)]/10">
+                  <Calendar className="h-6 w-6 text-[var(--nox-accent)]" />
                 </div>
               </div>
             </CardContent>
@@ -196,8 +193,8 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="border-b border-[var(--nox-border-subtle)]">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-status-invoiced)]/10">
-                  <DollarSign className="h-5 w-5 text-[var(--nox-status-invoiced)]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-bg-hover)]">
+                  <DollarSign className="h-5 w-5 text-[var(--nox-text-secondary)]" />
                 </div>
                 <div>
                   <CardTitle className="text-base">Billed This Year</CardTitle>
@@ -209,10 +206,9 @@ export default function DashboardPage() {
               <div className="text-3xl font-bold text-[var(--nox-text-primary)] mb-6">
                 {formatCurrency(stats?.billedThisYear || 0)}
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
                   <div className="flex items-center gap-3">
-                    <Wrench className="h-4 w-4 text-[var(--nox-accent)]" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Operator (Baha)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">80%</span>
                   </div>
@@ -220,7 +216,6 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
                   <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-cyan-500" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Admin (Kazim)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
                   </div>
@@ -228,7 +223,6 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
-                    <TrendingUp className="h-4 w-4 text-pink-500" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Sales (Eren)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
                   </div>
@@ -242,8 +236,8 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="border-b border-[var(--nox-border-subtle)]">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-status-paid)]/10">
-                  <CheckCircle className="h-5 w-5 text-[var(--nox-status-paid)]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--nox-accent)]/10">
+                  <CheckCircle className="h-5 w-5 text-[var(--nox-accent)]" />
                 </div>
                 <div>
                   <CardTitle className="text-base">Collected This Year</CardTitle>
@@ -252,13 +246,12 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-[var(--nox-status-paid)] mb-6">
+              <div className="text-3xl font-bold text-[var(--nox-accent)] mb-6">
                 {formatCurrency(stats?.collectedThisYear || 0)}
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
                   <div className="flex items-center gap-3">
-                    <Wrench className="h-4 w-4 text-[var(--nox-accent)]" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Operator (Baha)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">80%</span>
                   </div>
@@ -266,7 +259,6 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-[var(--nox-border-subtle)]">
                   <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-cyan-500" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Admin (Kazim)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
                   </div>
@@ -274,7 +266,6 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
-                    <TrendingUp className="h-4 w-4 text-pink-500" />
                     <span className="text-sm text-[var(--nox-text-secondary)]">Sales (Eren)</span>
                     <span className="text-xs text-[var(--nox-text-muted)] bg-[var(--nox-bg-hover)] px-2 py-0.5 rounded">10%</span>
                   </div>
