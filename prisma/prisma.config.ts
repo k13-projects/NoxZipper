@@ -6,6 +6,9 @@ import "dotenv/config";
 
 export default defineConfig({
   schema: path.join(__dirname, "schema.prisma"),
+  datasource: {
+    url: process.env.DATABASE_URL || `file:${path.join(__dirname, "dev.db")}`,
+  },
   migrate: {
     adapter: async () => {
       const databaseUrl = process.env.DATABASE_URL || "file:./dev.db";
