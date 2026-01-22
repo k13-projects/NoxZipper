@@ -1,8 +1,14 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 import * as bcrypt from "bcryptjs";
 import { addMonths, addDays, startOfDay, getDay, format } from "date-fns";
 
-const prisma = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";
+const adapter = new PrismaLibSql({
+  url: databaseUrl,
+  authToken: databaseUrl.startsWith("libsql://") ? process.env.TURSO_AUTH_TOKEN : undefined,
+});
+const prisma = new PrismaClient({ adapter });
 
 // =============================================================================
 // EREN'S LEADS - REAL DATA ONLY
