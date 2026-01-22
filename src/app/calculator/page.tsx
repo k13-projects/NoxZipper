@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator, TrendingUp } from "lucide-react";
+import { EstimatedSchedule } from "@/components/estimated-schedule";
 
 export default function CalculatorPage() {
   // Single job calculator
@@ -227,6 +228,12 @@ export default function CalculatorPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Estimated Schedule Preview */}
+        <EstimatedSchedule
+          numCustomers={numCustomers}
+          frequency={frequency as "QUARTERLY" | "SEMIANNUAL"}
+        />
 
         {/* Quick Reference */}
         <Card>
