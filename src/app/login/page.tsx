@@ -64,7 +64,7 @@ export default function LoginPage() {
               <img
                 src="/noxzipper-logo.png"
                 alt="NOXZIPPER"
-                className="h-20 w-auto object-contain drop-shadow-2xl"
+                className="h-40 w-auto object-contain drop-shadow-2xl animate-[logoShine_3s_ease-in-out_infinite]"
               />
             </div>
             <p className="text-sm text-[var(--nox-text-muted)]">

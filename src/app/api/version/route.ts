@@ -21,7 +21,10 @@ const monthMap: Record<string, number> = {
 
 export async function GET() {
   try {
-    const { stdout } = await execAsync("git branch --show-current");
+    // Get the latest created branch (sorted by creation date, newest first)
+    const { stdout } = await execAsync(
+      "git for-each-ref --sort=-creatordate --format='%(refname:short)' refs/heads/ | head -1"
+    );
     const branchName = stdout.trim();
 
     // Parse branch name like "Nox_Jan22_v3"
