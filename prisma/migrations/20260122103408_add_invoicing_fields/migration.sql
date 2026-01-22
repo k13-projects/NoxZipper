@@ -1,6 +1,0 @@
--- AlterTable
-ALTER TABLE "Job" ADD COLUMN "amountPaid" REAL;
-ALTER TABLE "Job" ADD COLUMN "invoiceNumber" TEXT;
-ALTER TABLE "Job" ADD COLUMN "invoiceSentAt" DATETIME;
-ALTER TABLE "Job" ADD COLUMN "paidAt" DATETIME;
-ALTER TABLE "Job" ADD COLUMN "paymentMethod" TEXT;
