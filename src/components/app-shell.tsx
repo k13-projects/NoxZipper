@@ -54,7 +54,7 @@ export function AppShell({ children }: AppShellProps) {
       <Sidebar />
       <main className="lg:pl-64">
         {/* Top Header */}
-        <header className="sticky top-0 z-30 border-b border-[var(--nox-border-subtle)] bg-[var(--nox-bg-base)]/80 backdrop-blur-md">
+        <header className="sticky top-0 z-30 border-b border-[var(--nox-border-subtle)] bg-[var(--nox-bg-surface)]">
           <div className="flex h-16 items-center justify-between px-4 lg:px-8">
             <div className="flex items-center gap-4">
               {/* Mobile spacer for hamburger menu */}
