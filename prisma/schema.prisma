@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Customer model
+model Customer {
+  id                  String    @id @default(uuid())
+  name                String    // Restaurant name
+  addressLine1        String
+  addressLine2        String?
+  city                String
+  state               String
+  zip                 String
+  contactName         String
+  contactPhone        String
+  contactEmail        String?
+  hoodLengthFt        Float     @default(10)
+  notes               String?
+  frequencyType       String    @default("QUARTERLY") // QUARTERLY, SEMIANNUAL, CUSTOM
+  customIntervalDays  Int?      // Used when frequencyType = CUSTOM
+  firstServiceDate    DateTime?
+  assignedOperator    String    @default("Baha")
+  salesPartner        String    @default("Eren")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  jobs Job[]
+}
+
+// Job model
+model Job {
+  id            String    @id @default(uuid())
+  customerId    String
+  customer      Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  scheduledDate DateTime
+  status        String    @default("SCHEDULED") // SCHEDULED, COMPLETED, INVOICED, CANCELLED
+  price         Float     @default(500)
+  operatorShare Float     @default(400) // 80% of price
+  adminShare    Float     @default(50)  // 10% of price
+  salesShare    Float     @default(50)  // 10% of price
+  operatorName  String    @default("Baha")
+  salesName     String    @default("Eren")
+  adminName     String    @default("Kazim")
+  completedAt   DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  attachments Attachment[]
+
+  @@unique([customerId, scheduledDate])
+}
+
+// Attachment model
+model Attachment {
+  id         String   @id @default(uuid())
+  jobId      String
+  job        Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  type       String   // BEFORE_PHOTO, AFTER_PHOTO, INVOICE_PDF, SERVICE_REPORT_PDF, OTHER
+  filename   String
+  filepath   String
+  mimeType   String?
+  size       Int?
+  uploadedAt DateTime @default(now())
+}

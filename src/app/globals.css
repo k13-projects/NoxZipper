@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+:root {
+  --background: #18181b;
+  --foreground: #f4f4f5;
+  --card: #1f1f23;
+  --card-foreground: #f4f4f5;
+  --primary: #ea580c;
+  --primary-foreground: #ffffff;
+  --secondary: #27272a;
+  --secondary-foreground: #f4f4f5;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #3f3f46;
+  --input: #27272a;
+  --ring: #ea580c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #27272a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #52525b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+/* FullCalendar overrides */
+.fc {
+  --fc-border-color: #3f3f46;
+  --fc-button-bg-color: #27272a;
+  --fc-button-border-color: #3f3f46;
+  --fc-button-hover-bg-color: #3f3f46;
+  --fc-button-hover-border-color: #52525b;
+  --fc-button-active-bg-color: #ea580c;
+  --fc-button-active-border-color: #ea580c;
+  --fc-today-bg-color: rgba(234, 88, 12, 0.1);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #27272a;
+  --fc-list-event-hover-bg-color: #3f3f46;
+  --fc-event-border-color: transparent;
+}
+
+.fc .fc-toolbar-title {
+  color: #f4f4f5;
+}
+
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-number {
+  color: #a1a1aa;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: rgba(234, 88, 12, 0.1);
+}
+
+.fc-event {
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.fc-event:hover {
+  opacity: 0.9;
+}
