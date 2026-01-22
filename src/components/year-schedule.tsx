@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { format, startOfYear, endOfYear, eachDayOfInterval, getDay, addDays, isSameDay } from "date-fns";
+import { format, startOfYear, endOfYear, eachDayOfInterval, getDay, addDays, isSameDay, isBefore, startOfDay } from "date-fns";
 
 interface Job {
   id: string;
@@ -27,7 +27,8 @@ export function YearSchedule() {
   const [hoveredDay, setHoveredDay] = useState<DayData | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-  const year = new Date().getFullYear();
+  const today = startOfDay(new Date());
+  const year = today.getFullYear();
   const startDate = startOfYear(new Date(year, 0, 1));
   const endDate = endOfYear(new Date(year, 0, 1));
 
@@ -66,12 +67,32 @@ export function YearSchedule() {
     return map;
   }, [jobs]);
 
-  // Get color based on job count
-  const getBoxColor = (count: number) => {
+  // Get color based on job count and past/future status
+  const getBoxStyles = (count: number, isPast: boolean, isToday: boolean) => {
+    // Base opacity for past days
+    const pastOpacity = isPast ? "opacity-40" : "";
+
+    if (isToday) {
+      if (count === 0) return "bg-[var(--nox-accent)]/20 ring-2 ring-[var(--nox-accent)]";
+      if (count === 1) return "bg-[var(--nox-accent)]/50 ring-2 ring-[var(--nox-accent)]";
+      if (count === 2) return "bg-[var(--nox-accent)]/70 ring-2 ring-[var(--nox-accent)]";
+      return "bg-[var(--nox-accent)] ring-2 ring-[var(--nox-accent)]";
+    }
+
+    if (isPast) {
+      // Past days - dimmed colors
+      if (count === 0) return "bg-[var(--nox-bg-elevated)] opacity-50";
+      if (count === 1) return "bg-[var(--nox-text-muted)]/30 opacity-60";
+      if (count === 2) return "bg-[var(--nox-text-muted)]/40 opacity-60";
+      if (count === 3) return "bg-[var(--nox-text-muted)]/50 opacity-60";
+      return "bg-[var(--nox-text-muted)]/60 opacity-60";
+    }
+
+    // Future days - vibrant accent colors
     if (count === 0) return "bg-[var(--nox-bg-hover)]";
-    if (count === 1) return "bg-[var(--nox-accent)]/30";
-    if (count === 2) return "bg-[var(--nox-accent)]/50";
-    if (count === 3) return "bg-[var(--nox-accent)]/70";
+    if (count === 1) return "bg-[var(--nox-accent)]/40";
+    if (count === 2) return "bg-[var(--nox-accent)]/60";
+    if (count === 3) return "bg-[var(--nox-accent)]/80";
     return "bg-[var(--nox-accent)]";
   };
 
@@ -111,7 +132,7 @@ export function YearSchedule() {
     return result;
   }, [allDays, dayJobsMap, startDate]);
 
-  // Month labels
+  // Month labels with better positioning
   const monthLabels = useMemo(() => {
     const labels: { month: string; weekIndex: number }[] = [];
     let lastMonth = -1;
@@ -147,12 +168,16 @@ export function YearSchedule() {
     if (day.jobs.length === 1) {
       router.push(`/jobs/${day.jobs[0].id}`);
     } else if (day.jobs.length > 1) {
-      // Navigate to calendar with that date selected
       router.push(`/calendar`);
     }
   };
 
   const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // Calculate stats
+  const pastJobs = jobs.filter(j => isBefore(new Date(j.scheduledDate), today));
+  const futureJobs = jobs.filter(j => !isBefore(new Date(j.scheduledDate), today));
+  const completedJobs = jobs.filter(j => j.status === "COMPLETED" || j.status === "INVOICED" || j.status === "PAID");
 
   if (loading) {
     return (
@@ -161,7 +186,7 @@ export function YearSchedule() {
           <CardTitle className="text-base">{year} Schedule Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center h-32">
+          <div className="flex items-center justify-center h-40">
             <Spinner />
           </div>
         </CardContent>
@@ -171,36 +196,55 @@ export function YearSchedule() {
 
   return (
     <Card>
-      <CardHeader className="border-b border-[var(--nox-border-subtle)]">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base">{year} Schedule Overview</CardTitle>
-          <div className="flex items-center gap-2 text-xs text-[var(--nox-text-muted)]">
-            <span>Less</span>
-            <div className="flex gap-1">
-              <div className="w-3 h-3 rounded-sm bg-[var(--nox-bg-hover)]" />
-              <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]/30" />
-              <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]/50" />
-              <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]/70" />
-              <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]" />
+      <CardHeader className="border-b border-[var(--nox-border-subtle)] pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <CardTitle className="text-lg">{year} Schedule Overview</CardTitle>
+            <p className="text-sm text-[var(--nox-text-muted)] mt-1">
+              Hover over days to see scheduled jobs
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            {/* Past/Future Legend */}
+            <div className="flex items-center gap-3 text-xs">
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-[var(--nox-text-muted)]/40 opacity-60" />
+                <span className="text-[var(--nox-text-muted)]">Past</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]/60" />
+                <span className="text-[var(--nox-text-muted)]">Future</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-sm bg-[var(--nox-accent)]/30 ring-2 ring-[var(--nox-accent)]" />
+                <span className="text-[var(--nox-text-muted)]">Today</span>
+              </div>
             </div>
-            <span>More</span>
+            {/* Intensity Legend */}
+            <div className="flex items-center gap-2 text-xs text-[var(--nox-text-muted)]">
+              <span>Less</span>
+              <div className="flex gap-1">
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-bg-hover)]" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/40" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/60" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]/80" />
+                <div className="w-3.5 h-3.5 rounded-sm bg-[var(--nox-accent)]" />
+              </div>
+              <span>More</span>
+            </div>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-4 overflow-x-auto">
-        <div className="min-w-[800px]">
-          {/* Month labels */}
-          <div className="flex mb-1 ml-8">
+      <CardContent className="pt-6 overflow-x-auto">
+        <div className="w-full">
+          {/* Month labels - positioned absolutely above grid */}
+          <div className="relative h-6 mb-2">
             {monthLabels.map((label, i) => (
               <div
                 key={i}
-                className="text-xs text-[var(--nox-text-muted)]"
+                className="absolute text-sm font-medium text-[var(--nox-text-secondary)]"
                 style={{
-                  position: "relative",
-                  left: `${label.weekIndex * 14}px`,
-                  marginRight: i < monthLabels.length - 1
-                    ? `${(monthLabels[i + 1].weekIndex - label.weekIndex - 1) * 14}px`
-                    : 0,
+                  left: `calc(${(label.weekIndex / weeks.length) * 100}% + 36px)`,
                 }}
               >
                 {label.month}
@@ -209,46 +253,47 @@ export function YearSchedule() {
           </div>
 
           {/* Grid */}
-          <div className="flex gap-[2px]">
+          <div className="flex gap-[3px]">
             {/* Day labels */}
-            <div className="flex flex-col gap-[2px] mr-1">
-              {dayLabels.map((label, i) => (
+            <div className="flex flex-col gap-[3px] mr-2 pt-0">
+              {dayLabels.map((label) => (
                 <div
                   key={label}
-                  className="h-3 text-[10px] text-[var(--nox-text-muted)] flex items-center"
-                  style={{ visibility: i % 2 === 1 ? "visible" : "hidden" }}
+                  className="h-4 text-xs text-[var(--nox-text-muted)] flex items-center justify-end pr-1 w-8"
                 >
                   {label}
                 </div>
               ))}
             </div>
 
-            {/* Weeks */}
-            {weeks.map((week, weekIndex) => (
-              <div key={weekIndex} className="flex flex-col gap-[2px]">
-                {week.map((day, dayIndex) => {
-                  const isCurrentYear = day.date.getFullYear() === year;
-                  const isToday = isSameDay(day.date, new Date());
-                  const jobCount = day.jobs.length;
+            {/* Weeks - expanded to fill width */}
+            <div className="flex-1 flex gap-[3px]">
+              {weeks.map((week, weekIndex) => (
+                <div key={weekIndex} className="flex-1 flex flex-col gap-[3px]">
+                  {week.map((day, dayIndex) => {
+                    const isCurrentYear = day.date.getFullYear() === year;
+                    const isToday = isSameDay(day.date, today);
+                    const isPast = isBefore(day.date, today) && !isToday;
+                    const jobCount = day.jobs.length;
 
-                  return (
-                    <div
-                      key={dayIndex}
-                      className={`
-                        w-3 h-3 rounded-sm cursor-pointer transition-all duration-100
-                        ${isCurrentYear ? getBoxColor(jobCount) : "bg-transparent"}
-                        ${isToday ? "ring-1 ring-[var(--nox-text-primary)]" : ""}
-                        ${isCurrentYear && jobCount > 0 ? "hover:ring-1 hover:ring-[var(--nox-accent)]" : ""}
-                      `}
-                      onMouseEnter={(e) => handleMouseEnter(day, e)}
-                      onMouseLeave={() => setHoveredDay(null)}
-                      onClick={() => isCurrentYear && handleDayClick(day)}
-                      title={isCurrentYear ? format(day.date, "MMM d, yyyy") : ""}
-                    />
-                  );
-                })}
-              </div>
-            ))}
+                    return (
+                      <div
+                        key={dayIndex}
+                        className={`
+                          w-full aspect-square min-h-4 rounded-sm cursor-pointer transition-all duration-150
+                          ${isCurrentYear ? getBoxStyles(jobCount, isPast, isToday) : "bg-transparent"}
+                          ${isCurrentYear && jobCount > 0 && !isToday ? "hover:ring-1 hover:ring-[var(--nox-accent)] hover:opacity-100" : ""}
+                          ${isCurrentYear && !isPast && !isToday ? "hover:scale-110" : ""}
+                        `}
+                        onMouseEnter={(e) => handleMouseEnter(day, e)}
+                        onMouseLeave={() => setHoveredDay(null)}
+                        onClick={() => isCurrentYear && handleDayClick(day)}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -262,35 +307,55 @@ export function YearSchedule() {
               transform: "translate(-50%, -100%)",
             }}
           >
-            <div className="bg-[var(--nox-bg-surface)] border border-[var(--nox-border-default)] rounded-lg shadow-lg p-3 min-w-[180px]">
-              <p className="text-sm font-medium text-[var(--nox-text-primary)] mb-1">
-                {format(hoveredDay.date, "EEEE, MMM d")}
-              </p>
+            <div className="bg-[var(--nox-bg-surface)] border border-[var(--nox-border-default)] rounded-lg shadow-xl p-4 min-w-[220px]">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-semibold text-[var(--nox-text-primary)]">
+                  {format(hoveredDay.date, "EEEE")}
+                </p>
+                <p className="text-xs text-[var(--nox-text-muted)]">
+                  {format(hoveredDay.date, "MMM d, yyyy")}
+                </p>
+              </div>
+
+              {isBefore(hoveredDay.date, today) && !isSameDay(hoveredDay.date, today) && (
+                <p className="text-[10px] uppercase tracking-wider text-[var(--nox-text-muted)] mb-2">Past</p>
+              )}
+              {isSameDay(hoveredDay.date, today) && (
+                <p className="text-[10px] uppercase tracking-wider text-[var(--nox-accent)] mb-2 font-medium">Today</p>
+              )}
+              {!isBefore(hoveredDay.date, today) && !isSameDay(hoveredDay.date, today) && (
+                <p className="text-[10px] uppercase tracking-wider text-[var(--nox-accent)] mb-2">Upcoming</p>
+              )}
+
               {hoveredDay.jobs.length === 0 ? (
-                <p className="text-xs text-[var(--nox-text-muted)]">No jobs scheduled</p>
+                <p className="text-sm text-[var(--nox-text-muted)]">No jobs scheduled</p>
               ) : (
-                <div className="space-y-1">
-                  <p className="text-xs text-[var(--nox-accent)]">
-                    {hoveredDay.jobs.length} job{hoveredDay.jobs.length > 1 ? "s" : ""} scheduled
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-[var(--nox-accent)]">
+                    {hoveredDay.jobs.length} job{hoveredDay.jobs.length > 1 ? "s" : ""}
                   </p>
-                  {hoveredDay.jobs.slice(0, 4).map((job) => (
-                    <div key={job.id} className="text-xs">
-                      <span className="text-[var(--nox-text-secondary)]">{job.customer.name}</span>
-                      <span className={`ml-2 px-1.5 py-0.5 rounded text-[10px] ${
-                        job.status === "SCHEDULED" ? "bg-[var(--nox-bg-hover)] text-[var(--nox-text-muted)]" :
-                        job.status === "COMPLETED" ? "bg-[var(--nox-success)]/20 text-[var(--nox-success)]" :
-                        job.status === "PAID" ? "bg-[var(--nox-success)]/20 text-[var(--nox-success)]" :
-                        "bg-[var(--nox-info)]/20 text-[var(--nox-info)]"
-                      }`}>
-                        {job.status}
-                      </span>
-                    </div>
-                  ))}
-                  {hoveredDay.jobs.length > 4 && (
-                    <p className="text-[10px] text-[var(--nox-text-muted)]">
-                      +{hoveredDay.jobs.length - 4} more
-                    </p>
-                  )}
+                  <div className="space-y-1.5">
+                    {hoveredDay.jobs.slice(0, 5).map((job) => (
+                      <div key={job.id} className="flex items-center justify-between gap-2 text-xs">
+                        <span className="text-[var(--nox-text-secondary)] truncate max-w-[140px]">
+                          {job.customer.name}
+                        </span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap ${
+                          job.status === "SCHEDULED" ? "bg-[var(--nox-bg-hover)] text-[var(--nox-text-muted)]" :
+                          job.status === "COMPLETED" ? "bg-[var(--nox-success)]/20 text-[var(--nox-success)]" :
+                          job.status === "PAID" ? "bg-[var(--nox-success)]/20 text-[var(--nox-success)]" :
+                          "bg-[var(--nox-info)]/20 text-[var(--nox-info)]"
+                        }`}>
+                          {job.status}
+                        </span>
+                      </div>
+                    ))}
+                    {hoveredDay.jobs.length > 5 && (
+                      <p className="text-[10px] text-[var(--nox-text-muted)] pt-1">
+                        +{hoveredDay.jobs.length - 5} more...
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -298,28 +363,22 @@ export function YearSchedule() {
         )}
 
         {/* Stats */}
-        <div className="flex gap-6 mt-4 pt-4 border-t border-[var(--nox-border-subtle)]">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[var(--nox-text-primary)]">{jobs.length}</p>
-            <p className="text-xs text-[var(--nox-text-muted)]">Total Jobs</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-[var(--nox-border-subtle)]">
+          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+            <p className="text-3xl font-bold text-[var(--nox-text-primary)]">{jobs.length}</p>
+            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Total Jobs</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[var(--nox-text-secondary)]">
-              {jobs.filter(j => j.status === "SCHEDULED").length}
-            </p>
-            <p className="text-xs text-[var(--nox-text-muted)]">Scheduled</p>
+          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+            <p className="text-3xl font-bold text-[var(--nox-text-muted)]">{pastJobs.length}</p>
+            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Past</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[var(--nox-success)]">
-              {jobs.filter(j => j.status === "COMPLETED" || j.status === "INVOICED" || j.status === "PAID").length}
-            </p>
-            <p className="text-xs text-[var(--nox-text-muted)]">Done</p>
+          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+            <p className="text-3xl font-bold text-[var(--nox-accent)]">{futureJobs.length}</p>
+            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Upcoming</p>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-[var(--nox-accent)]">
-              {new Set(jobs.map(j => j.scheduledDate.split("T")[0])).size}
-            </p>
-            <p className="text-xs text-[var(--nox-text-muted)]">Active Days</p>
+          <div className="text-center p-3 rounded-lg bg-[var(--nox-bg-hover)]">
+            <p className="text-3xl font-bold text-[var(--nox-success)]">{completedJobs.length}</p>
+            <p className="text-xs text-[var(--nox-text-muted)] mt-1">Completed</p>
           </div>
         </div>
       </CardContent>
